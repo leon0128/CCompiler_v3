@@ -8,3 +8,9 @@ Token::Token(EKind inKind):
 {
     TOKENS.emplace_back(this);
 }
+
+void Token::destroy()
+{
+    for(auto&& token : TOKENS)
+        delete token;
+}
