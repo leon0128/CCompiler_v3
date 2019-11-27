@@ -22,6 +22,8 @@ private:
     bool isOther(Token::EKind& kind);    // other
     bool isIgnore();                     // ignore
 
+    // 数値かどうか
+    bool isNumber() const;
     // error 出力
     bool error();
 

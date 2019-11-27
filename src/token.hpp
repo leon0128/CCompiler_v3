@@ -34,8 +34,9 @@ private:
 
 class OperatorToken : public Token
 {
+public:
     OperatorToken(EKind inKind):
-        Token(kind),
+        Token(inKind),
         lhs(nullptr),
         rhs(nullptr){}
     ~OperatorToken(){}

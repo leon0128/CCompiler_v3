@@ -42,3 +42,34 @@ void Tokenizer::consume()
             error();
     }
 }
+
+bool Tokenizer::isIntegral(long& value)
+{
+    if(!isNumber())
+        return false;
+
+    value = 0;
+    while(1)
+    {
+        if(isNumber())
+            value += value * 10 +
+                     mSource.at(mIndex++) - '0';
+        else
+            break;
+    }
+
+    return true;
+}
+
+bool Tokenizer::isNumber() const
+{
+    if(mIndex >= mSource.size())
+        return false;
+
+    bool isValid
+        = (mSource.at(mIndex) >= '0' &&
+           mSource.at(mIndex) <= '9')
+            ? true : false;
+
+    return isValid;
+}
