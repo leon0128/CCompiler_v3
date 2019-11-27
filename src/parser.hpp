@@ -18,6 +18,7 @@ private:
 
     // parse() で使用する関数
     class Token* statement();      // 文
+    class Token* expression();     // 式
     class Token* addition();       // 加減
     class Token* multiplication(); // 乗除
     class Token* unary();          // 単項

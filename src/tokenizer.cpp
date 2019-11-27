@@ -97,6 +97,8 @@ bool Tokenizer::isOther(Token::EKind& kind)
         kind = Token::OPEN_BRACKET;
     else if(mSource.at(mIndex) == ')')
         kind = Token::CLOSE_BRACKET;
+    else if(mSource.at(mIndex) == ';')
+        kind = Token::END;
     else
         return false;
 

@@ -14,7 +14,9 @@ public:
         // +, -, *, /, %
         PLUS, MINUS, ASTERISK, VIRGULE, PERCENT,
         // (, )
-        OPEN_BRACKET, CLOSE_BRACKET
+        OPEN_BRACKET, CLOSE_BRACKET,
+        // ;
+        END
     };
 
     // 特殊関数
