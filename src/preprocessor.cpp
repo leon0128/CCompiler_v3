@@ -14,7 +14,7 @@ Preprocessor::~Preprocessor()
 {
 }
 
-bool Preprocessor::preprocess(int argc, char** argv,
+bool Preprocessor::operator()(int argc, char** argv,
                               std::string& source)
 {
     if(!isValidArgument(argc))
@@ -24,7 +24,7 @@ bool Preprocessor::preprocess(int argc, char** argv,
     if(!isDeletedComment())
         return mIsValid;
     
-    outputData();
+    output();
     
     source.swap(mSource);
     return mIsValid;
@@ -94,7 +94,7 @@ bool Preprocessor::isDeletedComment()
     return mIsValid;
 }
 
-void Preprocessor::outputData() const
+void Preprocessor::output() const
 {
     FileManager::write(OUTPUT_FILENAME,
                        mSource.c_str());

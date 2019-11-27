@@ -24,9 +24,9 @@ Compiler::~Compiler()
 
 bool Compiler::operator()(int argc, char** argv)
 {
-    if(!mPreprocessor->preprocess(argc, argv, mSource))
+    if(!(*mPreprocessor)(argc, argv, mSource))
         return error("failed to preprocess.");
-    if(!mTokenizer->tokenize(mSource, mTokens))
+    if(!(*mTokenizer)(mSource, mTokens))
         return error("failed to tokenize.");
 
     return mIsValid;

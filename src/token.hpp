@@ -1,10 +1,12 @@
 #pragma once
 
 #include <vector>
+#include <unordered_map>
 
 class Token
 {
 public:
+    // トークンの種類を表す列挙体
     enum EKind
     {
         // integral
@@ -17,10 +19,8 @@ public:
 
     // 特殊関数
     Token(EKind inKind);
-    virtual ~Token(){}
-
-    EKind kind; // トークンの種類
-
+    virtual ~Token(){}    
+    EKind kind; // トークンの種類    
 
     // dynamic_cast をラップ
     template<typename T>
@@ -28,8 +28,11 @@ public:
     // トークンの開放
     static void destroy();
 
+    // トークンの種類と文字列のマップ
+    static const std::unordered_map<EKind, const char*> KIND_NAME_MAP;
 private:
-    static std::vector<Token*> TOKENS; // 作成したトークンを格納
+    // 作成したトークンを格納
+    static std::vector<Token*> TOKENS;
 };
 
 class OperatorToken : public Token

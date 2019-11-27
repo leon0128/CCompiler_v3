@@ -19,15 +19,15 @@ public:
 
     // 第一引数, 第二引数は コマンドライン引数
     // 第三引数は 処理したソースコード
-    bool preprocess(int argc, char** argv,
+    bool operator()(int argc, char** argv,
                     std::string& source);
 
 private:
     // preprocess() で使用される関数
-    bool isValidArgument(int argc);
-    bool isOpenedFile(char** argv);
-    bool isDeletedComment();
-    void outputData() const;
+    bool isValidArgument(int argc); // コマンドライン引数が有効か
+    bool isOpenedFile(char** argv); // ファイル読み込みの有無
+    bool isDeletedComment();        // コメントの削除が有効か
+    void output() const;            // debug
 
     std::string mSource;
     bool mIsValid;
