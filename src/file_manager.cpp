@@ -1,38 +1,37 @@
 #include "file_manager.hpp"
 
-void FileManager::write(const char* filename,
+bool FileManager::write(const char* filename,
                         const char* data)
 {
     std::ofstream file(filename, std::ios::out);
     if(!file.is_open())
-    {
-        openError(filename);
-        return;
-    }
+        return openError(filename);
 
     file << data;
     file.close();
+
+    return true;
 }
 
-void FileManager::read(const char* filename,
+bool FileManager::read(const char* filename,
                        std::string& data)
 {
     std::ifstream file(filename, std::ios::in);
     if(!file.is_open())
-    {
-        openError(filename);
-        return;
-    }
+        return openError(filename);
 
     std::stringstream stream;
     stream << file.rdbuf();
 
     data = stream.str();
     file.close();
+    
+    return true;
 }
 
-void FileManager::openError(const char* filename)
+bool FileManager::openError(const char* filename)
 {
     std::cerr << "file-err: failed to open file "
-              << "( " << filename << " )." << std::endl;  
+              << "( " << filename << " )." << std::endl; 
+    return false; 
 }

@@ -11,13 +11,13 @@ public:
     FileManager() = delete;
 
     // 書き込み
-    static void write(const char* filename,
+    static bool write(const char* filename,
                       const char* data);
 
     // 読み込み
-    static void read(const char* filename,
+    static bool read(const char* filename,
                      std::string& data);
 
 private:
-    static void openError(const char* filename);
+    static bool openError(const char* filename);
 };
