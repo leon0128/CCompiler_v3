@@ -28,12 +28,17 @@ void Tokenizer::consume()
     long integral = 0;
     Token::EKind kind = Token::INTEGRAL;
 
-    while(mIndex < mSource.size())
+    while(mIndex < mSource.size() && mIsValid)
     {
         if(isIntegral(integral))
             mTokens.emplace_back(new IntegralToken(integral));
         else if(isOperator(kind))
             mTokens.emplace_back(new OperatorToken(kind));
-        else if()
+        else if(isOther(kind))
+            mTokens.emplace_back(new Token(kind));
+        else if(isIgnore())
+            ;
+        else
+            error();
     }
 }
