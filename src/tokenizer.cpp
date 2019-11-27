@@ -18,7 +18,7 @@ Tokenizer::~Tokenizer()
 }
 
 bool Tokenizer::operator()(std::string& source,
-                           std::vector<Token*> tokens)
+                           std::vector<Token*>& tokens)
 {
     mSource.swap(source);
 
@@ -122,7 +122,8 @@ void Tokenizer::output() const
     for(std::size_t i = 0; i < mTokens.size(); i++)
     {
         data += "    " + std::to_string(i);
-        data += std::string(": ") + Token::KIND_NAME_MAP.at(mTokens.at(i)->kind);
+        data += std::string(": \"") + Token::KIND_NAME_MAP.at(mTokens.at(i)->kind);
+        data += "\"";
 
         if(i != mTokens.size() - 1)
             data += ",";

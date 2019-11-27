@@ -15,7 +15,7 @@ public:
     ~Tokenizer();
 
     bool operator()(std::string& source,
-                    std::vector<class Token*> tokens);
+                    std::vector<class Token*>& tokens);
 
 private:
     void tokenize();

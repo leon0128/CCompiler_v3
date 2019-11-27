@@ -1,21 +1,26 @@
 #include "compiler.hpp"
 #include "preprocessor.hpp"
 #include "tokenizer.hpp"
+#include "parser.hpp"
 #include "token.hpp"
 
 Compiler::Compiler():
     mPreprocessor(nullptr),
     mTokenizer(nullptr),
+    mParser(nullptr),
     mSource(),
     mTokens(),
+    mParent(nullptr),
     mIsValid(true)
 {
     mPreprocessor = new Preprocessor();
     mTokenizer    = new Tokenizer();
+    mParser       = new Parser();
 }
 
 Compiler::~Compiler()
 {
+    delete mParser;
     delete mTokenizer;
     delete mPreprocessor;
 
@@ -28,6 +33,8 @@ bool Compiler::operator()(int argc, char** argv)
         return error("failed to preprocess.");
     if(!(*mTokenizer)(mSource, mTokens))
         return error("failed to tokenize.");
+    if(!(*mParser)(mTokens, mParent))
+        return error("failed to parse.");
 
     return mIsValid;
 }

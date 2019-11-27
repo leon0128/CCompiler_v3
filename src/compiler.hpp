@@ -19,9 +19,11 @@ private:
 
     class Preprocessor* mPreprocessor;
     class Tokenizer* mTokenizer;
+    class Parser* mParser;
     
     std::string mSource;
     std::vector<class Token*> mTokens;
+    class Token* mParent;
 
     bool mIsValid;
 };
