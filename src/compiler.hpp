@@ -2,6 +2,7 @@
 
 #include <string>
 #include <iostream>
+#include <vector>
 
 class Compiler
 {
@@ -13,7 +14,14 @@ public:
     bool operator()(int argc, char** argv);
 
 private:
-    class Preprocessor* mPreprocessor;
+    // エラー出力
+    bool error(const char* message);
 
+    class Preprocessor* mPreprocessor;
+    class Tokenizer* mTokenizer;
+    
     std::string mSource;
+    std::vector<class Token*> mTokens;
+
+    bool mIsValid;
 };

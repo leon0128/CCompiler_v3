@@ -1,25 +1,42 @@
 #include "compiler.hpp"
 #include "preprocessor.hpp"
+#include "tokenizer.hpp"
+#include "token.hpp"
 
 Compiler::Compiler():
     mPreprocessor(nullptr),
-    mSource()
+    mTokenizer(nullptr),
+    mSource(),
+    mTokens(),
+    mIsValid(true)
 {
     mPreprocessor = new Preprocessor();
+    mTokenizer    = new Tokenizer();
 }
 
 Compiler::~Compiler()
 {
+    delete mTokenizer;
     delete mPreprocessor;
+
+    Token::destroy();
 }
 
 bool Compiler::operator()(int argc, char** argv)
 {
     if(!mPreprocessor->preprocess(argc, argv, mSource))
-    {
-        std::cerr << "err: failed to preprocess." << std::endl;
-        return false;
-    }
+        return error("failed to preprocess.");
+    if(!mTokenizer->tokenize(mSource, mTokens))
+        return error("failed to tokenize.");
 
-    return true;
+    return mIsValid;
+}
+
+bool Compiler::error(const char* message)
+{
+    std::cerr << "comp-err: "
+              << message << std::endl;
+
+    mIsValid = false;
+    return mIsValid;
 }
