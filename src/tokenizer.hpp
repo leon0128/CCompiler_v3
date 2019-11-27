@@ -7,9 +7,6 @@
 
 class Tokenizer
 {
-private:
-    static const char* OUTPUT_FILENAME; // 出力ファイル
-
 public:
     Tokenizer();
     ~Tokenizer();
@@ -25,7 +22,6 @@ private:
     bool isOperator(Token::EKind& kind); // operator
     bool isOther(Token::EKind& kind);    // other
     bool isIgnore();                     // ignore
-    void output() const;                 // debug
 
     // 数値かどうか
     bool isNumber() const;

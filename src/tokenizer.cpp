@@ -1,9 +1,6 @@
 #include "tokenizer.hpp"
-#include "file_manager.hpp"
+#include "debug.hpp"
 #include "token.hpp"
-
-const char* Tokenizer::OUTPUT_FILENAME
-    = "tmp/tokenizer.log";
 
 Tokenizer::Tokenizer():
     mSource(),
@@ -24,7 +21,7 @@ bool Tokenizer::operator()(std::string& source,
 
     tokenize();
 
-    output();
+    Debug::tokenizer(mTokens);
 
     tokens.swap(mTokens);
     return mIsValid;
@@ -115,27 +112,6 @@ bool Tokenizer::isIgnore()
 
     mIndex++;
     return true;
-}
-
-void Tokenizer::output() const
-{
-    std::string data("{\n");
-
-    for(std::size_t i = 0; i < mTokens.size(); i++)
-    {
-        data += "    " + std::to_string(i);
-        data += std::string(": \"") + Token::KIND_NAME_MAP.at(mTokens.at(i)->kind);
-        data += "\"";
-
-        if(i != mTokens.size() - 1)
-            data += ",";
-        data += "\n";
-    }
-
-    data += "}\n";
-
-    FileManager::write(OUTPUT_FILENAME,
-                       data.c_str());
 }
 
 bool Tokenizer::isNumber() const

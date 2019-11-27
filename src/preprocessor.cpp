@@ -1,8 +1,6 @@
 #include "preprocessor.hpp"
 #include "file_manager.hpp"
-
-const char* Preprocessor::OUTPUT_FILENAME
-    = "tmp/preprocessor.log";
+#include "debug.hpp"
 
 Preprocessor::Preprocessor():
     mSource(),
@@ -24,7 +22,7 @@ bool Preprocessor::operator()(int argc, char** argv,
     if(!isDeletedComment())
         return mIsValid;
     
-    output();
+    Debug::preprocessor(mSource);
     
     source.swap(mSource);
     return mIsValid;
@@ -92,10 +90,4 @@ bool Preprocessor::isDeletedComment()
     }
 
     return mIsValid;
-}
-
-void Preprocessor::output() const
-{
-    FileManager::write(OUTPUT_FILENAME,
-                       mSource.c_str());
 }

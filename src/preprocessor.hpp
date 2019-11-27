@@ -10,9 +10,6 @@
 
 class Preprocessor
 {
-private:
-    static const char* OUTPUT_FILENAME; // プリプロセスの結果を出力するファイル名
-
 public:
     Preprocessor();
     ~Preprocessor();
@@ -27,7 +24,6 @@ private:
     bool isValidArgument(int argc); // コマンドライン引数が有効か
     bool isOpenedFile(char** argv); // ファイル読み込みの有無
     bool isDeletedComment();        // コメントの削除が有効か
-    void output() const;            // debug
 
     std::string mSource;
     bool mIsValid;
