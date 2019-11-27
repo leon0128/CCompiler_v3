@@ -1,4 +1,5 @@
 #include "parser.hpp"
+#include "debug.hpp"
 #include "token.hpp"
 
 Parser::Parser():
@@ -19,6 +20,8 @@ bool Parser::operator()(std::vector<Token*>& tokens,
     mTokens.swap(tokens);
 
     parse();
+
+    Debug::parser(mParent);
 
     parent = mParent;
     return mIsValid;

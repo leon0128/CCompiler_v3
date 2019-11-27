@@ -24,6 +24,11 @@ public:
     virtual ~Token(){}    
     EKind kind; // トークンの種類    
 
+    // 型の判別
+    bool isIntegral() const;
+    bool isOperator() const;
+    bool isOther() const;
+    
     // dynamic_cast をラップ
     template<typename T>
     static T cast(Token* token){return dynamic_cast<T>(token);}

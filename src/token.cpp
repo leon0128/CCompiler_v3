@@ -15,6 +15,33 @@ Token::Token(EKind inKind):
     TOKENS.emplace_back(this);
 }
 
+bool Token::isIntegral() const
+{
+    return kind == INTEGRAL;
+}
+
+bool Token::isOperator() const
+{
+    if(kind == PLUS     ||
+       kind == MINUS    ||
+       kind == ASTERISK ||
+       kind == VIRGULE  ||
+       kind == PERCENT)
+        return true;
+    else
+        return false;
+}
+
+bool Token::isOther() const
+{
+    if(kind == OPEN_BRACKET  ||
+       kind == CLOSE_BRACKET ||
+       kind == END)
+        return true;
+    else
+        return false;
+}
+
 void Token::destroy()
 {
     for(auto&& token : TOKENS)

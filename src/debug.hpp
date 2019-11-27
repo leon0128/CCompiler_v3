@@ -17,4 +17,5 @@ public:
     // 各工程での処理結果を出力
     static void preprocessor(const std::string& source);
     static void tokenizer(const std::vector<class Token*>& tokens);
+    static void parser(class Token* parent);
 };
