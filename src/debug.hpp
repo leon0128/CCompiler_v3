@@ -9,6 +9,7 @@ private:
     // 各デバックデータの出力ファイル名
     static const char* PREPROCESS_FILENAME;
     static const char* TOKENIZER_FILENAME;
+    static const char* PARSER_FILENAME;
 
 public:
     Debug() = delete;

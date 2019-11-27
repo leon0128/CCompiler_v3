@@ -4,4 +4,4 @@ main
 */*.o
 *.o
 tmp/*
-
+debug/*
