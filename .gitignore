@@ -1,3 +1,7 @@
+Compiler
+a.out
 main
 */*.o
 *.o
+tmp/*
+
