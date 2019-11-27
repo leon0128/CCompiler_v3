@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include <iostream>
+
 class Compiler
 {
 public:
@@ -11,4 +14,6 @@ public:
 
 private:
     class Preprocessor* mPreprocessor;
+
+    std::string mSource;
 };
