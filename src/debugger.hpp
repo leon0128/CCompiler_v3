@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <sstream>
 
 class Debugger
 {
@@ -10,6 +11,7 @@ private:
     static const char* PREPROCESS_FILENAME;
     static const char* TOKENIZER_FILENAME;
     static const char* PARSER_FILENAME;
+    static const char* GENERATOR_FILENAME;
 
 public:
     Debugger() = delete;
@@ -18,4 +20,5 @@ public:
     static void preprocessor(const std::string& source);
     static void tokenizer(const std::vector<class Token*>& tokens);
     static void parser(class Token* parent);
+    static void generator(const std::stringstream& stream);
 };

@@ -12,6 +12,8 @@ const char* Debugger::TOKENIZER_FILENAME
     = "debug/tokenizer.log";
 const char* Debugger::PARSER_FILENAME
     = "debug/parser.log";
+const char* Debugger::GENERATOR_FILENAME
+    = "debug/generator.log";
 
 void Debugger::preprocessor(const std::string& source)
 {
@@ -35,4 +37,12 @@ void Debugger::tokenizer(const std::vector<Token*>& tokens)
 void Debugger::parser(Token* parent)
 {
     ParserDebugger::debug(parent, PARSER_FILENAME);
+}
+
+void Debugger::generator(const std::stringstream& stream)
+{
+    std::string temp(stream.str());
+
+    FileManager::write(GENERATOR_FILENAME,
+                       temp.c_str());
 }
