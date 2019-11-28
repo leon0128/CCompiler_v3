@@ -1,4 +1,4 @@
-#include "debug.hpp"
+#include "debugger.hpp"
 #include "file_manager.hpp"
 #include "token.hpp"
 
@@ -7,20 +7,20 @@
 #include <boost/foreach.hpp>
 #include <boost/optional.hpp>
 
-const char* Debug::PREPROCESS_FILENAME
+const char* Debugger::PREPROCESS_FILENAME
     = "debug/preprocessor.log";
-const char* Debug::TOKENIZER_FILENAME
+const char* Debugger::TOKENIZER_FILENAME
     = "debug/tokenizer.log";
-const char* Debug::PARSER_FILENAME
+const char* Debugger::PARSER_FILENAME
     = "debug/parser.log";
 
-void Debug::preprocessor(const std::string& source)
+void Debugger::preprocessor(const std::string& source)
 {
     FileManager::write(PREPROCESS_FILENAME,
                        source.c_str());
 }
 
-void Debug::tokenizer(const std::vector<Token*>& tokens)
+void Debugger::tokenizer(const std::vector<Token*>& tokens)
 {
     using namespace boost::property_tree;
 
@@ -67,7 +67,8 @@ namespace PARSER
         IntegralToken* intTok
             = Token::cast<IntegralToken*>(token);
         
-        tree.put("value", intTok->value);
+        std::string key(Token::KIND_NAME_MAP.at(token->kind));
+        tree.put(key + std::string(".value"), intTok->value);
         return tree;
     }
 
@@ -86,7 +87,7 @@ namespace PARSER
     }
 };
 
-void Debug::parser(Token* parent)
+void Debugger::parser(Token* parent)
 {
     boost::property_tree::ptree tree
         = PARSER::consume(parent);

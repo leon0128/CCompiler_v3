@@ -1,5 +1,5 @@
 #include "tokenizer.hpp"
-#include "debug.hpp"
+#include "debugger.hpp"
 #include "token.hpp"
 
 Tokenizer::Tokenizer():
@@ -21,7 +21,7 @@ bool Tokenizer::operator()(std::string& source,
 
     tokenize();
 
-    Debug::tokenizer(mTokens);
+    Debugger::tokenizer(mTokens);
 
     tokens.swap(mTokens);
     return mIsValid;

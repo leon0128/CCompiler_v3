@@ -1,6 +1,6 @@
 #include "preprocessor.hpp"
 #include "file_manager.hpp"
-#include "debug.hpp"
+#include "debugger.hpp"
 
 Preprocessor::Preprocessor():
     mSource(),
@@ -22,7 +22,7 @@ bool Preprocessor::operator()(int argc, char** argv,
     if(!isDeletedComment())
         return mIsValid;
     
-    Debug::preprocessor(mSource);
+    Debugger::preprocessor(mSource);
     
     source.swap(mSource);
     return mIsValid;

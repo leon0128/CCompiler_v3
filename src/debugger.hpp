@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-class Debug
+class Debugger
 {
 private:
     // 各デバックデータの出力ファイル名
@@ -12,7 +12,7 @@ private:
     static const char* PARSER_FILENAME;
 
 public:
-    Debug() = delete;
+    Debugger() = delete;
 
     // 各工程での処理結果を出力
     static void preprocessor(const std::string& source);
