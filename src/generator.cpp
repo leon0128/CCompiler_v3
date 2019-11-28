@@ -1,4 +1,5 @@
 #include "generator.hpp"
+#include "debugger.hpp"
 #include "token.hpp"
 
 Generator::Generator():
@@ -13,12 +14,24 @@ Generator::~Generator()
 }
 
 bool Generator::operator()(Token* parent,
-                           std::string& assembly)
+                           std::stringstream& assembly)
 {
     mParent = parent;
 
     generate();
 
+    Debugger::generator(mAssembly);
+
     assembly.swap(mAssembly);
     return mIsValid;
+}
+
+void Generator::generate()
+{
+    mAssembly << ".intel_syntax noprefix\n"
+              << ".global main\n\n"
+              << "main:\n";
+
+    
+
 }
