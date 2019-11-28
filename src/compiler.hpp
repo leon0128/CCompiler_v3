@@ -20,10 +20,12 @@ private:
     class Preprocessor* mPreprocessor;
     class Tokenizer* mTokenizer;
     class Parser* mParser;
+    class Generator* mGenerator;
     
     std::string mSource;
     std::vector<class Token*> mTokens;
     class Token* mParent;
+    std::string mAssembly;
 
     bool mIsValid;
 };

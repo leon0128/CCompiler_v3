@@ -2,12 +2,14 @@
 #include "preprocessor.hpp"
 #include "tokenizer.hpp"
 #include "parser.hpp"
+#include "generator.hpp"
 #include "token.hpp"
 
 Compiler::Compiler():
     mPreprocessor(nullptr),
     mTokenizer(nullptr),
     mParser(nullptr),
+    mGenerator(nullptr),
     mSource(),
     mTokens(),
     mParent(nullptr),
@@ -16,10 +18,12 @@ Compiler::Compiler():
     mPreprocessor = new Preprocessor();
     mTokenizer    = new Tokenizer();
     mParser       = new Parser();
+    mGenerator    = new Generator();
 }
 
 Compiler::~Compiler()
 {
+    delete mGenerator;
     delete mParser;
     delete mTokenizer;
     delete mPreprocessor;
@@ -35,6 +39,8 @@ bool Compiler::operator()(int argc, char** argv)
         return error("failed to tokenize.");
     if(!(*mParser)(mTokens, mParent))
         return error("failed to parse.");
+    if(!(*mGenerator)(mParent, mAssembly))
+        return error("failed to generate.");
 
     return mIsValid;
 }
