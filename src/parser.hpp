@@ -20,7 +20,7 @@ private:
     class Token* statement();      // 文
     class Token* expression();     // 式
     class Token* addition();       // 加減
-    class Token* multiplication(); // 乗除
+    class Token* multiplication(); // 乗除余
     class Token* unary();          // 単項
     class Token* primary();        // 数値、()
 

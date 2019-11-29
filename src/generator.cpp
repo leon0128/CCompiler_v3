@@ -89,6 +89,12 @@ void Generator::conOperator(Token* token)
         instruction(CQO);
         instruction(IDIV, Operand::RBX);
     }
+    else if(opeTok->kind == Token::PERCENT)
+    {
+        instruction(CQO);
+        instruction(IDIV, Operand::RBX);
+        instruction(MOV, Operand::RAX, Operand::RDX);
+    }
 }
 
 void Generator::conIntegral(Token* token)

@@ -15,6 +15,9 @@ boost::property_tree::ptree ParserDebugger::consume(Token* token)
 {
     boost::property_tree::ptree tree;
 
+    if(!token)
+        return tree;
+
     if(token->isIntegral())
         tree = conIntegral(token);
     else if(token->isOperator())

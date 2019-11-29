@@ -80,7 +80,8 @@ Token* Parser::multiplication()
     while(1)
     {
         if(isValid(Token::ASTERISK) ||
-           isValid(Token::VIRGULE))
+           isValid(Token::VIRGULE)  ||
+           isValid(Token::PERCENT))
         {
             OperatorToken* opeTok
                 = Token::cast<OperatorToken*>(mTokens.at(mIndex++));
