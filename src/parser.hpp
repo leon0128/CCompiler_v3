@@ -17,6 +17,7 @@ private:
     void parse();
 
     // parse() で使用する関数
+    class Token* unit();           // ファイル全体
     class Token* statement();      // 文
     class Token* expression();     // 式
     class Token* addition();       // 加減

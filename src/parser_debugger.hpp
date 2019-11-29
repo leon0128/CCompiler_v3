@@ -6,8 +6,9 @@
 #include <iostream>
 
 // 各トークンのメンバを表示するかどうか
-#define DEBUG_INTEGRAL 1
+#define DEBUG_PARENT   1
 #define DEBUG_OPERATOR 1
+#define DEBUG_INTEGRAL 1
 
 class ParserDebugger
 {
@@ -21,6 +22,8 @@ public:
 private:
     std::string consume(class Token* token,
                         std::string disc = std::string());
+    std::string conParent(class Token* token,
+                          std::string disc = std::string());
     std::string conOperator(class Token* token,
                             std::string disc = std::string());
     std::string conIntegral(class Token* token,

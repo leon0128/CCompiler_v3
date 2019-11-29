@@ -4,10 +4,11 @@ std::vector<Token*> Token::TOKENS
     = std::vector<Token*>();
 
 const std::unordered_map<Token::EKind, const char*> Token::KIND_NAME_MAP
-    = {{Token::INTEGRAL, "INTEGRAL"},
-       {Token::PLUS, "PLUS"}, {Token::MINUS, "MINUS"}, {Token::ASTERISK, "ASTERISK"}, {Token::VIRGULE, "VIRGULE"}, {Token::PERCENT, "PERCENT"},
-       {Token::OPEN_BRACKET, "OPEN_BRACKET"}, {Token::CLOSE_BRACKET, "CLOSE_BRACKET"},
-       {Token::END, "END"}};
+    = {{PARENT, "PARENT"},
+       {INTEGRAL, "INTEGRAL"},
+       {PLUS, "PLUS"}, {MINUS, "MINUS"}, {ASTERISK, "ASTERISK"}, {VIRGULE, "VIRGULE"}, {PERCENT, "PERCENT"},
+       {OPEN_BRACKET, "OPEN_BRACKET"}, {CLOSE_BRACKET, "CLOSE_BRACKET"},
+       {END, "END"}};
 
 Token::Token(EKind inKind):
     kind(inKind)
@@ -15,9 +16,9 @@ Token::Token(EKind inKind):
     TOKENS.emplace_back(this);
 }
 
-bool Token::isIntegral() const
+bool Token::isParent() const
 {
-    return kind == INTEGRAL;
+    return kind == PARENT;
 }
 
 bool Token::isOperator() const
@@ -30,6 +31,11 @@ bool Token::isOperator() const
         return true;
     else
         return false;
+}
+
+bool Token::isIntegral() const
+{
+    return kind == INTEGRAL;
 }
 
 bool Token::isOther() const

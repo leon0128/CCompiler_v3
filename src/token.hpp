@@ -27,8 +27,9 @@ public:
     EKind kind; // トークンの種類    
 
     // 型の判別
+    bool isParent() const;
+    bool isOperator() const;    
     bool isIntegral() const;
-    bool isOperator() const;
     bool isOther() const;
     
     // dynamic_cast をラップ

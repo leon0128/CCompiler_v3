@@ -29,7 +29,18 @@ bool Parser::operator()(std::vector<Token*>& tokens,
 
 void Parser::parse()
 {
-    mParent = statement();
+    mParent = unit();
+}
+
+Token* Parser::unit()
+{
+    ParentToken* parTok
+        = new ParentToken();
+
+    while(mIndex < mTokens.size())
+        parTok->children.push_back(statement());
+
+    return parTok;
 }
 
 Token* Parser::statement()

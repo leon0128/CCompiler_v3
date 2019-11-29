@@ -14,7 +14,7 @@ ParserDebugger::~ParserDebugger()
 bool ParserDebugger::debug(const char* filename,
                            Token* parent)
 {
-    std::string data(consume(parent));
+    std::string data(consume(parent, "unit"));
 
     return FileManager::write(filename, data);
 }
@@ -25,7 +25,9 @@ std::string ParserDebugger::consume(Token* token, std::string disc)
 
     if(token)
     {
-        if(token->isOperator())
+        if(token->isParent())
+            data = conParent(token, disc);
+        else if(token->isOperator())
             data = conOperator(token, disc);
         else if(token->isIntegral())
             data = conIntegral(token, disc);
@@ -35,6 +37,41 @@ std::string ParserDebugger::consume(Token* token, std::string disc)
 
     return data;
 }
+
+std::string ParserDebugger::conParent(Token* token, std::string disc)
+{
+    std::stringstream stream;
+    addNodeHeader(token, stream, disc);
+
+    #if DEBUG_PARENT
+        ParentToken* parTok
+            = Token::cast<ParentToken*>(token);
+        mIsValidIndents.push_back(true);
+
+        for(std::size_t i = 0; i < parTok->children.size(); i++)
+        {
+            if(i != parTok->children.size() - 1)
+            {
+                stream << createIndent(mIsValidIndents.size() - 1)
+                       << " |--"
+                       << consume(parTok->children.at(i), "childlen");
+            }
+            else
+            {
+                mIsValidIndents.back() = false;
+                stream << createIndent(mIsValidIndents.size() - 1)
+                       << " `--"
+                       << consume(parTok->children.at(i), "children");
+            }
+        }
+
+        mIsValidIndents.pop_back();
+    #endif
+
+    std::string data(stream.str());
+    return data;
+}
+
 std::string ParserDebugger::conOperator(Token* token, std::string disc)
 {
     std::stringstream stream;
@@ -67,7 +104,7 @@ std::string ParserDebugger::conIntegral(Token* token, std::string disc)
     #if DEBUG_INTEGRAL
         IntegralToken* intTok
             = Token::cast<IntegralToken*>(token);
-            
+
         stream << createIndent(mIsValidIndents.size())
             << " `----- "
             << intTok->value

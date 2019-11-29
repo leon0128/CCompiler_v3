@@ -54,12 +54,23 @@ void Generator::consume(Token* token)
     if(!mIsValid)
         return;
 
-    if(token->isOperator())
+    if(token->isParent())
+        conParent(token);
+    else if(token->isOperator())
         conOperator(token);
     else if(token->isIntegral())
         conIntegral(token);
     else
         error(token);
+}
+
+void Generator::conParent(Token* token)
+{
+    ParentToken* parTok
+        = Token::cast<ParentToken*>(token);
+
+    for(auto&& token : parTok->children)
+        consume(token);
 }
 
 void Generator::conOperator(Token* token)

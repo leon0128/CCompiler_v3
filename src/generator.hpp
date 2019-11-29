@@ -31,6 +31,7 @@ private:
     void generate();
 
     void consume(class Token* token);
+    void conParent(class Token* token);
     void conOperator(class Token* token);
     void conIntegral(class Token* token);
 
