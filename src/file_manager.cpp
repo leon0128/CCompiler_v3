@@ -1,4 +1,6 @@
 #include "file_manager.hpp"
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/property_tree/ptree.hpp>
 
 bool FileManager::write(const char* filename,
                         const char* data)
@@ -11,6 +13,25 @@ bool FileManager::write(const char* filename,
     file.close();
 
     return true;
+}
+
+bool FileManager::write(const char* filename,
+                        void* pTree)
+{
+    boost::property_tree::ptree* tree 
+        = static_cast<boost::property_tree::ptree*>(pTree);
+
+    try
+    {
+        boost::property_tree::write_json(filename,
+                                         *tree);
+        return true;
+    }
+    catch(...)
+    {
+        openError(filename);
+        return false;
+    }
 }
 
 bool FileManager::read(const char* filename,

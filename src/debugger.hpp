@@ -21,4 +21,8 @@ public:
     static void tokenizer(const std::vector<class Token*>& tokens);
     static void parser(class Token* parent);
     static void generator(const std::stringstream& stream);
+
+private:
+    // error
+    static bool error(const char* section);
 };

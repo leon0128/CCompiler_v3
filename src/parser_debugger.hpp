@@ -10,7 +10,7 @@ class ParserDebugger
 public:
     ParserDebugger() = delete;
 
-    static void debug(class Token* parent,
+    static bool debug(class Token* parent,
                       const char* filename);
 
 private:

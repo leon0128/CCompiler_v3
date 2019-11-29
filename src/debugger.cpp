@@ -17,8 +17,9 @@ const char* Debugger::GENERATOR_FILENAME
 
 void Debugger::preprocessor(const std::string& source)
 {
-    FileManager::write(PREPROCESS_FILENAME,
-                       source.c_str());
+    if(!FileManager::write(PREPROCESS_FILENAME,
+                           source.c_str()))
+        error("preprocessor");
 }
 
 void Debugger::tokenizer(const std::vector<Token*>& tokens)
@@ -30,19 +31,29 @@ void Debugger::tokenizer(const std::vector<Token*>& tokens)
     for(std::size_t i = 0; i < tokens.size(); i++)
         tree.put(std::to_string(i), Token::KIND_NAME_MAP.at(tokens.at(i)->kind));
     
-    write_json(TOKENIZER_FILENAME,
-               tree);
+    if(!FileManager::write(TOKENIZER_FILENAME,
+                           &tree))
+        error("tokenizer");
 }
 
 void Debugger::parser(Token* parent)
 {
-    ParserDebugger::debug(parent, PARSER_FILENAME);
+    if(!ParserDebugger::debug(parent, PARSER_FILENAME))
+        error("parser");
 }
 
 void Debugger::generator(const std::stringstream& stream)
 {
     std::string temp(stream.str());
 
-    FileManager::write(GENERATOR_FILENAME,
-                       temp.c_str());
+    if(!FileManager::write(GENERATOR_FILENAME,
+                           temp.c_str()))
+        error("generator");
+}
+
+bool Debugger::error(const char* section)
+{
+    std::cerr << "debu-err: failed to write debug data "
+              << "( " << section << " )." << std::endl;
+    return false;
 }

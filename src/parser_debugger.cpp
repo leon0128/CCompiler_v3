@@ -1,13 +1,14 @@
 #include "parser_debugger.hpp"
+#include "file_manager.hpp"
 #include "token.hpp"
 
-void ParserDebugger::debug(Token* parent,
-                                  const char* filename)
+bool ParserDebugger::debug(Token* parent,
+                           const char* filename)
 {
     boost::property_tree::ptree tree
         = consume(parent);
 
-    boost::property_tree::write_json(filename, tree);
+    return FileManager::write(filename, &tree);
 }
 
 boost::property_tree::ptree ParserDebugger::consume(Token* token)
