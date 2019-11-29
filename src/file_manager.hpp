@@ -13,9 +13,10 @@ public:
     // 書き込み
     static bool write(const char* filename,
                       const char* data);
-    // json 書き込み
     static bool write(const char* filename,
-                      void* pTree);
+                      const std::string& data);
+    static bool write(const char* filename,
+                      const std::stringstream& data);
 
     // 読み込み
     static bool read(const char* filename,

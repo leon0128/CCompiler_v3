@@ -3,9 +3,6 @@
 #include "token.hpp"
 #include "parser_debugger.hpp"
 
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
-
 const char* Debugger::PREPROCESS_FILENAME
     = "debug/preprocessor.log";
 const char* Debugger::TOKENIZER_FILENAME
@@ -17,37 +14,38 @@ const char* Debugger::GENERATOR_FILENAME
 
 void Debugger::preprocessor(const std::string& source)
 {
-    if(!FileManager::write(PREPROCESS_FILENAME,
-                           source.c_str()))
+    if(!FileManager::write(PREPROCESS_FILENAME, source))
         error("preprocessor");
 }
 
 void Debugger::tokenizer(const std::vector<Token*>& tokens)
 {
-    using namespace boost::property_tree;
+    std::stringstream stream;
 
-    ptree tree;
-
+    stream << "{" << std::endl;
     for(std::size_t i = 0; i < tokens.size(); i++)
-        tree.put(std::to_string(i), Token::KIND_NAME_MAP.at(tokens.at(i)->kind));
-    
-    if(!FileManager::write(TOKENIZER_FILENAME,
-                           &tree))
+    {
+        stream << std::string(4, ' ') << i << ": "
+               << Token::KIND_NAME_MAP.at(tokens.at(i)->kind);
+        if(i != tokens.size() - 1)
+            stream << "," << std::endl;
+    }
+    stream << std::endl << "}" << std::endl;
+
+    if(!FileManager::write(TOKENIZER_FILENAME, stream))
         error("tokenizer");
 }
 
 void Debugger::parser(Token* parent)
 {
-    if(!ParserDebugger::debug(parent, PARSER_FILENAME))
+    ParserDebugger debugger;
+    if(!debugger.debug(PARSER_FILENAME, parent))
         error("parser");
 }
 
 void Debugger::generator(const std::stringstream& stream)
 {
-    std::string temp(stream.str());
-
-    if(!FileManager::write(GENERATOR_FILENAME,
-                           temp.c_str()))
+    if(!FileManager::write(GENERATOR_FILENAME, stream))
         error("generator");
 }
 

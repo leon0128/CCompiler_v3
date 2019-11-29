@@ -1,20 +1,24 @@
 #pragma once
 
 #include <string>
+#include <sstream>
 #include <iostream>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
 
 class ParserDebugger
 {
 public:
-    ParserDebugger() = delete;
+    ParserDebugger();
 
-    static bool debug(class Token* parent,
-                      const char* filename);
+    bool debug(const char* filename,
+               class Token* parent);
 
 private:
-    static boost::property_tree::ptree consume(Token* token);
-    static boost::property_tree::ptree conOperator(Token* token);
-    static boost::property_tree::ptree conIntegral(Token* token);
+    void consume(class Token* token);
+    void conOperator(class Token* token);
+    void conIntegral(class Token* token);
+
+    bool error(class Token* token);
+
+    std::stringstream mStream;
+    std::size_t mIndent;
 };
