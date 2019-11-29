@@ -7,6 +7,10 @@
 
 class Compiler
 {
+private:
+    // 出力ファイル名
+    static const char* RESULT_FILENAME;
+
 public:
     Compiler();
     ~Compiler();

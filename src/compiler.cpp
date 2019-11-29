@@ -4,6 +4,10 @@
 #include "parser.hpp"
 #include "generator.hpp"
 #include "token.hpp"
+#include "file_manager.hpp"
+
+const char* Compiler::RESULT_FILENAME
+    = "as.s";
 
 Compiler::Compiler():
     mPreprocessor(nullptr),
@@ -41,6 +45,10 @@ bool Compiler::operator()(int argc, char** argv)
         return error("failed to parse.");
     if(!(*mGenerator)(mParent, mAssembly))
         return error("failed to generate.");
+
+
+    std::string tmp(mAssembly.str());
+    FileManager::write(RESULT_FILENAME, tmp.c_str());
 
     return mIsValid;
 }

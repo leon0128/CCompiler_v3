@@ -3,5 +3,6 @@ a.out
 main
 */*.o
 *.o
+*.s
 tmp/*
 debug/*

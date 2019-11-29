@@ -5,7 +5,7 @@
 
 class Operand
 {
-private:
+public:
     enum ERegister
     {
         // 64 bit
@@ -39,7 +39,6 @@ private:
     };
     static const std::unordered_map<ERegister, const char*> REGISTER_NAME_MAP;
 
-public:
     Operand();
     Operand(long value);
     Operand(ERegister reg);
