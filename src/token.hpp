@@ -9,6 +9,8 @@ public:
     // トークンの種類を表す列挙体
     enum EKind
     {
+        // parent
+        PARENT,
         // integral
         INTEGRAL,
         // +, -, *, /, %
@@ -40,6 +42,16 @@ public:
 private:
     // 作成したトークンを格納
     static std::vector<Token*> TOKENS;
+};
+
+class ParentToken : public Token
+{
+public:
+    ParentToken():
+        Token(PARENT),
+        children(){}
+
+    std::vector<Token*> children;
 };
 
 class OperatorToken : public Token

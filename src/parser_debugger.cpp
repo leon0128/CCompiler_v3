@@ -41,17 +41,18 @@ std::string ParserDebugger::conOperator(Token* token, std::string disc)
     addNodeHeader(token, stream, disc);
     
     #if DEBUG_OPERATOR
-    OperatorToken* opeTok
-        = Token::cast<OperatorToken*>(token);
-    mIsValidIndents.push_back(true);
-    stream << createIndent(mIsValidIndents.size() - 1)
-           << " |--"
-           << consume(opeTok->lhs, "lhs");
-    mIsValidIndents.back() = false;
-    stream << createIndent(mIsValidIndents.size() - 1)
-           << " `--"
-           << consume(opeTok->rhs, "rhs");
-    mIsValidIndents.pop_back();
+        OperatorToken* opeTok
+            = Token::cast<OperatorToken*>(token);
+        
+        mIsValidIndents.push_back(true);
+        stream << createIndent(mIsValidIndents.size() - 1)
+            << " |--"
+            << consume(opeTok->lhs, "lhs");
+        mIsValidIndents.back() = false;
+        stream << createIndent(mIsValidIndents.size() - 1)
+            << " `--"
+            << consume(opeTok->rhs, "rhs");
+        mIsValidIndents.pop_back();
     #endif
 
     std::string data(stream.str());
@@ -64,12 +65,13 @@ std::string ParserDebugger::conIntegral(Token* token, std::string disc)
     addNodeHeader(token, stream, disc);
 
     #if DEBUG_INTEGRAL
-    IntegralToken* intTok
-        = Token::cast<IntegralToken*>(token);
-    stream << createIndent(mIsValidIndents.size())
-           << " `----- "
-           << intTok->value
-           << std::endl;
+        IntegralToken* intTok
+            = Token::cast<IntegralToken*>(token);
+            
+        stream << createIndent(mIsValidIndents.size())
+            << " `----- "
+            << intTok->value
+            << std::endl;
     #endif
 
     std::string data(stream.str());
