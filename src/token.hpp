@@ -15,7 +15,7 @@ public:
         // function, variable
         FUNCTION, VARIABLE,
         // declaration
-        DEC_LONG,
+        DEC_LONG, DEC_INT, DEC_SHORT, DEC_CHAR,
         // integral
         INTEGRAL,
         // =, !
@@ -26,15 +26,15 @@ public:
         CMP_EQUAL, CMP_NOT_EQUAL,
         CMP_LESS, CMP_LESS_EQUAL,
         CMP_GREATER, CMP_GREATER_EQUAL,
-        // (, )
-        OPEN_BRACKET, CLOSE_BRACKET,
+        // (, ), {, }
+        OPEN_BRACKET, CLOSE_BRACKET, OPEN_BLOCK, CLOSE_BLOCK,
         // ,, ;
         COMMA, END
     };
     // 型
     enum EType
     {
-        LONG
+        LONG, INT, SHORT, CHAR
     };
 
     // 特殊関数
@@ -62,8 +62,12 @@ public:
 
     // トークンの種類と文字列のマップ
     static const std::unordered_map<EKind, const char*> KIND_NAME_MAP;
+    // 型名
+    static const std::unordered_map<EType, const char*> TYPE_NAME_MAP;
     // 型の大きさ
     static const std::unordered_map<EType, long> TYPE_SIZE_MAP;
+    // 宣言に対応する型
+    static const std::unordered_map<EKind, EType> TYPE_DEC_MAP;
 private:
     // 作成したトークンを格納
     static std::vector<Token*> TOKENS;

@@ -35,6 +35,23 @@ const std::unordered_map<Operand::ERegister, const char*> Operand::REGISTER_NAME
        {Operand::YMM8,   "ymm8"}, {Operand::YMM9,   "ymm9"}, {Operand::YMM10, "ymm10"}, {Operand::YMM11, "ymm11"},
        {Operand::YMM12, "ymm12"}, {Operand::YMM13, "ymm13"}, {Operand::YMM14, "ymm14"}, {Operand::YMM15, "ymm15"}};
 
+Operand::ERegister Operand::shrinkAccum(Token* token)
+{
+    VariableToken* varTok
+        = Token::cast<VariableToken*>(token);
+    
+    if(Token::TYPE_SIZE_MAP.at(varTok->type) == 8)
+        return RAX;
+    else if(Token::TYPE_SIZE_MAP.at(varTok->type) == 4)
+        return EAX;
+    else if(Token::TYPE_SIZE_MAP.at(varTok->type) == 2)
+        return AX;
+    else if(Token::TYPE_SIZE_MAP.at(varTok->type) == 1)
+        return AL;
+    else
+        return R15;
+}
+
 Operand::Operand():
     mString()
 {

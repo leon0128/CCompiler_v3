@@ -69,16 +69,20 @@ Token* Parser::statement()
 
 Token* Parser::declaration()
 {
-    ParentToken* parTok = new ParentToken();
+    Token* token = nullptr;
 
-    if(isConsumed(Token::DEC_LONG))
+    if(mTokens.at(mIndex)->isDeclaration())
     {
+        ParentToken* parTok = new ParentToken();
+        Token::EType type
+            = Token::TYPE_DEC_MAP.at(mTokens.at(mIndex++)->kind);
+
         while(1)
         {
             if(!isErrored(Token::VARIABLE))
                 break;
             
-            addVariableTrait(mTokens.at(--mIndex), Token::LONG);
+            addVariableTrait(mTokens.at(--mIndex), type);
 
             Token* token = expression();
 
@@ -93,9 +97,13 @@ Token* Parser::declaration()
             if(!isConsumed(Token::COMMA))
                 break;
         }
-    }
 
-    return parTok;
+        token = parTok;
+    }
+    else
+        token = expression();
+
+    return token;
 }
 
 Token* Parser::expression()
@@ -346,7 +354,7 @@ void Parser::addVariableTrait(Token* token, Token::EType type)
 
     varTok->offset
         = (mVariableTraits.size() + 1) * 8;
-    mVariableTraits.push_back(VariableTrait{varTok->type,
+    mVariableTraits.push_back(VariableTrait{type,
                                             varTok->name,
                                             varTok->offset});
 }

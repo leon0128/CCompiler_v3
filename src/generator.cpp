@@ -133,11 +133,9 @@ void Generator::conAssignmentOperator(Token* token)
 {
     OperatorToken* opeTok
         = Token::cast<OperatorToken*>(token);
-    VariableToken* varTok
-        = Token::cast<VariableToken*>(opeTok->lhs);
 
     consume(opeTok->rhs);
-    instruction(MOV, varTok, Operand::RAX);
+    instruction(MOV, opeTok->lhs, Operand::shrinkAccum(opeTok->lhs));
 }
 
 void Generator::conCompareOperator(Token* token)
@@ -175,7 +173,7 @@ void Generator::conCompareOperator(Token* token)
 
 void Generator::conVariable(Token* token)
 {
-    instruction(MOV, Operand::RAX, token);
+    instruction(MOV, Operand::shrinkAccum(token), token);
 }
 
 void Generator::conIntegral(Token* token)

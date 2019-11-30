@@ -6,18 +6,24 @@ std::vector<Token*> Token::TOKENS
 const std::unordered_map<Token::EKind, const char*> Token::KIND_NAME_MAP
     = {{PARENT, "PARENT"},
        {FUNCTION, "FUNCTION"}, {VARIABLE, "VARIABLE"},
-       {DEC_LONG, "DEC_LONG"},
+       {DEC_LONG, "DEC_LONG"}, {DEC_INT, "DEC_INT"}, {DEC_SHORT, "DEC_SHORT"}, {DEC_CHAR, "DEC_CHAR"},
        {INTEGRAL, "INTEGRAL"},
        {EQUAL, "EQUAL"}, {NOT, "NOT"},
        {PLUS, "PLUS"}, {MINUS, "MINUS"}, {ASTERISK, "ASTERISK"}, {VIRGULE, "VIRGULE"}, {PERCENT, "PERCENT"},
        {CMP_EQUAL, "CMP_EQUAL"}, {CMP_NOT_EQUAL, "CMP_NOT_EQUAL"},
        {CMP_LESS, "CMP_LESS"}, {CMP_LESS_EQUAL, "CMP_LESS_EQUAL"},
        {CMP_GREATER, "CMP_GREATER"}, {CMP_GREATER_EQUAL, "CMP_GREATER_EQUAL"},
-       {OPEN_BRACKET, "OPEN_BRACKET"}, {CLOSE_BRACKET, "CLOSE_BRACKET"},
+       {OPEN_BRACKET, "OPEN_BRACKET"}, {CLOSE_BRACKET, "CLOSE_BRACKET"}, {OPEN_BLOCK, "OPEN_BLOCK"}, {CLOSE_BLOCK, "CLOSE_BLOCK"},
        {COMMA, "COMMA"}, {END, "END"}};
 
+const std::unordered_map<Token::EType, const char*> Token::TYPE_NAME_MAP
+    = {{LONG, "long"}, {INT, "int"}, {SHORT, "short"}, {CHAR, "char"}};
+
 const std::unordered_map<Token::EType, long> Token::TYPE_SIZE_MAP
-    = {{LONG, 8}};
+    = {{LONG, 8}, {INT, 4}, {SHORT, 2}, {CHAR, 1}};
+
+const std::unordered_map<Token::EKind, Token::EType> Token::TYPE_DEC_MAP
+    = {{DEC_LONG, LONG}, {DEC_INT, INT}, {DEC_SHORT, SHORT}, {DEC_CHAR, CHAR}};
 
 Token::Token(EKind inKind):
     kind(inKind)
@@ -37,7 +43,10 @@ bool Token::isFunction() const
 
 bool Token::isDeclaration() const
 {
-    if(kind == DEC_LONG)
+    if(kind == DEC_LONG  ||
+       kind == DEC_INT   ||
+       kind == DEC_SHORT ||
+       kind == DEC_CHAR)
         return true;
     else
         return false;

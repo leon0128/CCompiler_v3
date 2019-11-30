@@ -43,6 +43,9 @@ public:
     };
     static const std::unordered_map<ERegister, const char*> REGISTER_NAME_MAP;
 
+    // 変数の大きさに合わせて アキュームレジスタ の使用する領域の変更
+    static ERegister shrinkAccum(class Token* token);
+
     Operand();
     Operand(long value);
     Operand(ERegister reg);

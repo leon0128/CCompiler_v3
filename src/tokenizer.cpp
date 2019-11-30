@@ -3,7 +3,7 @@
 #include "token.hpp"
 
 const std::unordered_map<std::string, Token::EKind> Tokenizer::RESERVED_WORD_MAP
-    = {{"long", Token::DEC_LONG}};
+    = {{"long", Token::DEC_LONG}, {"int", Token::DEC_INT}, {"short", Token::DEC_SHORT}, {"char", Token::DEC_CHAR}};
 
 Tokenizer::Tokenizer():
     mSource(),
@@ -165,6 +165,10 @@ bool Tokenizer::isOther(Token::EKind& kind)
         kind = Token::OPEN_BRACKET;
     else if(isValid(')'))
         kind = Token::CLOSE_BRACKET;
+    else if(isValid('{'))
+        kind = Token::OPEN_BLOCK;
+    else if(isValid('}'))
+        kind = Token::CLOSE_BLOCK;
     else if(isValid(','))
         kind = Token::COMMA;
     else if(isValid(';'))

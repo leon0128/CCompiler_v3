@@ -139,6 +139,10 @@ std::string ParserDebugger::conVariable(Token* token, std::string disc)
             = Token::cast<VariableToken*>(token);
 
         stream << createIndent(mIsValidIndents.size())
+               << " |----- "
+               << Token::TYPE_NAME_MAP.at(varTok->type)
+               << " (type)" << std::endl
+               << createIndent(mIsValidIndents.size())
                << " |----- \""
                << varTok->name << "\" (name)"
                << std::endl
