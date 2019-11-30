@@ -3,11 +3,13 @@
 #include "token.hpp"
 
 const std::unordered_map<Generator::EInstruction, std::pair<const char*, std::size_t>> Generator::INSTRUCTION_MAP
-    = {{MOV,  {"mov  ", 2}},
-       {PUSH, {"push ", 1}}, {POP,  {"pop  ", 1}},
-       {ADD,  {"add  ", 2}}, {SUB,  {"sub  ", 2}}, {IMUL, {"imul ", 1}}, {IDIV, {"idiv ", 1}},
-       {CQO,  {"cqo  ", 0}},
-       {RET,  {"ret  ", 0}}};
+    = {{MOV,   {"mov   ", 2}}, {MOVZX, {"movzx ", 2}},
+       {PUSH,  {"push  ", 1}}, {POP,   {"pop   ", 1}},
+       {CMP,   {"cmp   ", 2}},
+       {SETE,  {"sete  ", 1}}, {SETNE, {"setne ", 1}}, {SETL,  {"setl  ", 1}}, {SETLE, {"setle ", 1}}, {SETG,  {"setg  ", 1}}, {SETGE, {"setge", 1}},
+       {ADD,   {"add   ", 2}}, {SUB,   {"sub   ", 2}}, {IMUL,  {"imul  ", 1}}, {IDIV,  {"idiv  ", 1}},
+       {CQO,   {"cqo   ", 0}},
+       {RET,   {"ret   ", 0}}};
 
 Generator::Generator():
     mParent(nullptr),
@@ -54,6 +56,8 @@ void Generator::consume(Token* token)
         conArithmeticOperator(token);
     else if(token->isAssignmentOperator())
         conAssignmentOperator(token);
+    else if(token->isCompareOperator())
+        conCompareOperator(token);
     else if(token->isVariable())
         conVariable(token);
     else if(token->isIntegral())
@@ -136,6 +140,39 @@ void Generator::conAssignmentOperator(Token* token)
     instruction(MOV,
                 Operand(Operand::RBP, -varTok->offset),
                 Operand::RAX);
+}
+
+void Generator::conCompareOperator(Token* token)
+{
+    OperatorToken* opeTok
+        = Token::cast<OperatorToken*>(token);
+
+    consume(opeTok->lhs);
+    instruction(PUSH, Operand::RAX);
+    consume(opeTok->rhs);
+    instruction(PUSH, Operand::RAX);
+
+    instruction(POP, Operand::RBX);
+    instruction(POP, Operand::RAX);
+
+    instruction(CMP, Operand::RAX, Operand::RBX);
+
+    if(token->kind == Token::CMP_EQUAL)
+        instruction(SETE, Operand::AL);
+    else if(token->kind == Token::CMP_NOT_EQUAL)
+        instruction(SETNE, Operand::AL);
+    else if(token->kind == Token::CMP_LESS)
+        instruction(SETL, Operand::AL);
+    else if(token->kind == Token::CMP_LESS_EQUAL)
+        instruction(SETLE, Operand::AL);
+    else if(token->kind == Token::CMP_GREATER)
+        instruction(SETG, Operand::AL);
+    else if(token->kind == Token::CMP_GREATER_EQUAL)
+        instruction(SETGE, Operand::AL);
+    else
+        error(token);
+    
+    instruction(MOVZX, Operand::RAX, Operand::AL);
 }
 
 void Generator::conVariable(Token* token)

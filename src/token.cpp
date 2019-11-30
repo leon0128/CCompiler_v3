@@ -7,8 +7,11 @@ const std::unordered_map<Token::EKind, const char*> Token::KIND_NAME_MAP
     = {{PARENT, "PARENT"},
        {FUNCTION, "FUNCTION"}, {VARIABLE, "VARIABLE"},
        {INTEGRAL, "INTEGRAL"},
-       {EQUAL, "EQUAL"},
+       {EQUAL, "EQUAL"}, {NOT, "NOT"},
        {PLUS, "PLUS"}, {MINUS, "MINUS"}, {ASTERISK, "ASTERISK"}, {VIRGULE, "VIRGULE"}, {PERCENT, "PERCENT"},
+       {CMP_EQUAL, "CMP_EQUAL"}, {CMP_NOT_EQUAL, "CMP_NOT_EQUAL"},
+       {CMP_LESS, "CMP_LESS"}, {CMP_LESS_EQUAL, "CMP_LESS_EQUAL"},
+       {CMP_GREATER, "CMP_GREATER"}, {CMP_GREATER_EQUAL, "CMP_GREATER_EQUAL"},
        {OPEN_BRACKET, "OPEN_BRACKET"}, {CLOSE_BRACKET, "CLOSE_BRACKET"},
        {END, "END"}};
 
@@ -31,7 +34,8 @@ bool Token::isFunction() const
 bool Token::isOperator() const
 {
     if(isArithmeticOperator() ||
-       isAssignmentOperator())
+       isAssignmentOperator() ||
+       isCompareOperator())
         return true;
     else
         return false;
@@ -52,6 +56,19 @@ bool Token::isArithmeticOperator() const
 bool Token::isAssignmentOperator() const
 {
     if(kind == EQUAL)
+        return true;
+    else
+        return false;
+}
+
+bool Token::isCompareOperator() const
+{
+    if(kind == CMP_EQUAL      ||
+       kind == CMP_NOT_EQUAL  ||
+       kind == CMP_LESS       ||
+       kind == CMP_LESS_EQUAL ||
+       kind == CMP_GREATER    ||
+       kind == CMP_GREATER_EQUAL)
         return true;
     else
         return false;

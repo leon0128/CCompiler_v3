@@ -24,10 +24,9 @@ private:
     bool isOther(Token::EKind& kind);    // other
     bool isIgnore();                     // ignore
 
-    // 数値かどうか
-    bool isNumber() const;
-    // アルファベット 又は アンダーバー
-    bool isAlphabet() const; 
+    bool isValid(char c) const; // 指定した文字
+    bool isNumber() const;      // 数値
+    bool isAlphabet() const;    // アルファベット又はアンダーバー 
     // error 出力
     bool error();
 

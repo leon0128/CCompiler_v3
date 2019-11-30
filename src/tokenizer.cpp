@@ -89,22 +89,52 @@ bool Tokenizer::isIntegral(long& value)
 bool Tokenizer::isOperator(Token::EKind& kind)
 {
     kind = Token::INTEGRAL;
-
-    if(mSource.at(mIndex) == '=')
-        kind = Token::EQUAL;
-    else if(mSource.at(mIndex) == '+')
+    
+    if(isValid('+'))
         kind = Token::PLUS;
-    else if(mSource.at(mIndex) == '-')
+    else if(isValid('-'))
         kind = Token::MINUS;
-    else if(mSource.at(mIndex) == '*')
+    else if(isValid('*'))
         kind = Token::ASTERISK;
-    else if(mSource.at(mIndex) == '/')
+    else if(isValid('/'))
         kind = Token::VIRGULE;
-    else if(mSource.at(mIndex) == '%')
+    else if(isValid('%'))
         kind = Token::PERCENT;
+    else if(isValid('='))
+    {
+        mIndex++;
+        if(isValid('='))
+            kind = Token::CMP_EQUAL;
+        else
+            kind = Token::EQUAL;
+    }
+    else if(isValid('!'))
+    {
+        mIndex++;
+        if(isValid('='))
+            kind = Token::CMP_NOT_EQUAL;
+        else
+            kind = Token::NOT;
+    }
+    else if(isValid('<'))
+    {
+        mIndex++;
+        if(isValid('='))
+            kind = Token::CMP_LESS_EQUAL;
+        else
+            kind = Token::CMP_LESS;
+    }
+    else if(isValid('>'))
+    {
+        mIndex++;
+        if(isValid('='))
+            kind = Token::CMP_GREATER_EQUAL;
+        else
+            kind = Token::CMP_GREATER;
+    }
     else
         return false;
-    
+
     mIndex++;
     return true;
 }
@@ -113,11 +143,11 @@ bool Tokenizer::isOther(Token::EKind& kind)
 {
     kind = Token::INTEGRAL;
 
-    if(mSource.at(mIndex) == '(')
+    if(isValid('('))
         kind = Token::OPEN_BRACKET;
-    else if(mSource.at(mIndex) == ')')
+    else if(isValid(')'))
         kind = Token::CLOSE_BRACKET;
-    else if(mSource.at(mIndex) == ';')
+    else if(isValid(';'))
         kind = Token::END;
     else
         return false;
@@ -128,13 +158,21 @@ bool Tokenizer::isOther(Token::EKind& kind)
 
 bool Tokenizer::isIgnore()
 {
-    if(mSource.at(mIndex) != ' '  &&
-       mSource.at(mIndex) != '\t' &&
-       mSource.at(mIndex) != '\n')
+    if(!isValid(' ')  &&
+       !isValid('\t') &&
+       !isValid('\n'))
         return false;
 
     mIndex++;
     return true;
+}
+
+bool Tokenizer::isValid(char c) const
+{
+    if(mIndex >= mSource.size())
+        return false;
+    
+    return (c == mSource.at(mIndex));
 }
 
 bool Tokenizer::isNumber() const

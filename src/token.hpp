@@ -16,10 +16,14 @@ public:
         FUNCTION, VARIABLE,
         // integral
         INTEGRAL,
-        // =
-        EQUAL,
+        // =, !
+        EQUAL, NOT,
         // +, -, *, /, %
         PLUS, MINUS, ASTERISK, VIRGULE, PERCENT,
+        // ==, !=, <, <=, >, >=
+        CMP_EQUAL, CMP_NOT_EQUAL,
+        CMP_LESS, CMP_LESS_EQUAL,
+        CMP_GREATER, CMP_GREATER_EQUAL,
         // (, )
         OPEN_BRACKET, CLOSE_BRACKET,
         // ;
@@ -37,6 +41,7 @@ public:
     bool isOperator() const;
     bool isArithmeticOperator() const;
     bool isAssignmentOperator() const;
+    bool isCompareOperator() const;
     bool isVariable() const;
     bool isIntegral() const;
     bool isOther() const;

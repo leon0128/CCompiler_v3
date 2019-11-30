@@ -76,7 +76,7 @@ Token* Parser::expression()
 
 Token* Parser::assignment()
 {
-    Token* token = addition();
+    Token* token = equality();
 
     if(isValid(Token::EQUAL))
     {
@@ -90,6 +90,56 @@ Token* Parser::assignment()
         opeTok->rhs = assignment();
 
         token = opeTok;
+    }
+
+    return token;
+}
+
+Token* Parser::equality()
+{
+    Token* token = comparison();
+
+    while(1)
+    {
+        if(isValid(Token::CMP_EQUAL) ||
+           isValid(Token::CMP_NOT_EQUAL))
+        {
+            OperatorToken* opeTok
+                = Token::cast<OperatorToken*>(mTokens.at(mIndex++));
+            
+            opeTok->lhs = comparison();
+            opeTok->rhs = comparison();
+
+            token = opeTok;
+        }
+        else
+            break;
+    }
+
+    return token;
+}
+
+Token* Parser::comparison()
+{
+    Token* token = addition();
+
+    while(1)
+    {
+        if(isValid(Token::CMP_LESS)       ||
+           isValid(Token::CMP_LESS_EQUAL) ||
+           isValid(Token::CMP_GREATER)    ||
+           isValid(Token::CMP_GREATER_EQUAL))
+        {
+            OperatorToken* opeTok
+                = Token::cast<OperatorToken*>(mTokens.at(mIndex++));
+            
+            opeTok->lhs = token;
+            opeTok->rhs = addition();
+
+            token = opeTok;
+        }
+        else
+            break;
     }
 
     return token;

@@ -22,6 +22,8 @@ private:
     class Token* statement();      // 文
     class Token* expression();     // 式
     class Token* assignment();     // 代入
+    class Token* equality();       // 比較(等)
+    class Token* comparison();     // 比較(大小)
     class Token* addition();       // 加減
     class Token* multiplication(); // 乗除余
     class Token* unary();          // 単項
