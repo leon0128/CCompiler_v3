@@ -90,7 +90,9 @@ bool Tokenizer::isOperator(Token::EKind& kind)
 {
     kind = Token::INTEGRAL;
 
-    if(mSource.at(mIndex) == '+')
+    if(mSource.at(mIndex) == '=')
+        kind = Token::EQUAL;
+    else if(mSource.at(mIndex) == '+')
         kind = Token::PLUS;
     else if(mSource.at(mIndex) == '-')
         kind = Token::MINUS;

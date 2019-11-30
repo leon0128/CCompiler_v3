@@ -21,6 +21,7 @@ private:
     class Token* function();       // 関数
     class Token* statement();      // 文
     class Token* expression();     // 式
+    class Token* assignment();     // 代入
     class Token* addition();       // 加減
     class Token* multiplication(); // 乗除余
     class Token* unary();          // 単項
@@ -31,6 +32,7 @@ private:
     bool isErrored(Token::EKind kind);
 
     bool error(Token::EKind kind);
+    bool error(const char* message);
 
     // 変数の情報を格納する構造体 と 配列
     struct VariableTrait

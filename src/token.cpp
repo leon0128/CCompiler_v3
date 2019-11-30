@@ -7,6 +7,7 @@ const std::unordered_map<Token::EKind, const char*> Token::KIND_NAME_MAP
     = {{PARENT, "PARENT"},
        {FUNCTION, "FUNCTION"}, {VARIABLE, "VARIABLE"},
        {INTEGRAL, "INTEGRAL"},
+       {EQUAL, "EQUAL"},
        {PLUS, "PLUS"}, {MINUS, "MINUS"}, {ASTERISK, "ASTERISK"}, {VIRGULE, "VIRGULE"}, {PERCENT, "PERCENT"},
        {OPEN_BRACKET, "OPEN_BRACKET"}, {CLOSE_BRACKET, "CLOSE_BRACKET"},
        {END, "END"}};
@@ -29,7 +30,8 @@ bool Token::isFunction() const
 
 bool Token::isOperator() const
 {
-    if(kind == PLUS     ||
+    if(kind == EQUAL    ||
+       kind == PLUS     ||
        kind == MINUS    ||
        kind == ASTERISK ||
        kind == VIRGULE  ||

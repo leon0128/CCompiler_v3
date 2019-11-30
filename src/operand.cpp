@@ -52,7 +52,8 @@ Operand::Operand(ERegister reg, long offset):
     std::stringstream stream;
     stream << "QWORD PTR "
            << "[" << REGISTER_NAME_MAP.at(reg)
-           << " " << offset << "]";
+           << ((offset >= 0) ? " + " : " - ")
+           << std::abs(offset) << "]";
     mString = stream.str();
 }
 

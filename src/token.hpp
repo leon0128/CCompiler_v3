@@ -16,6 +16,8 @@ public:
         FUNCTION, VARIABLE,
         // integral
         INTEGRAL,
+        // =
+        EQUAL,
         // +, -, *, /, %
         PLUS, MINUS, ASTERISK, VIRGULE, PERCENT,
         // (, )

@@ -119,6 +119,19 @@ void Generator::conOperator(Token* token)
         instruction(IDIV, Operand::RBX);
         instruction(MOV, Operand::RAX, Operand::RDX);
     }
+    else if(opeTok->kind == Token::EQUAL)
+    {
+        VariableToken* varTok
+            = Token::cast<VariableToken*>(opeTok->lhs);
+        
+        instruction(MOV,
+                    Operand(Operand::RBP, -varTok->offset),
+                    Operand::RBX);
+        instruction(MOV, Operand::RAX,
+                    Operand(Operand::RBP, -varTok->offset));
+    }
+    else
+        error(token);
 }
 
 void Generator::conVariable(Token* token)

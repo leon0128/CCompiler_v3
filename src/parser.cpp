@@ -69,7 +69,28 @@ Token* Parser::statement()
 
 Token* Parser::expression()
 {
+    Token* token = assignment();
+
+    return token;
+}
+
+Token* Parser::assignment()
+{
     Token* token = addition();
+
+    if(isValid(Token::EQUAL))
+    {
+        if(token->kind != Token::VARIABLE)
+            error("invalid lvalue in assignment expression.");
+        
+        OperatorToken* opeTok
+            = Token::cast<OperatorToken*>(mTokens.at(mIndex++));
+        
+        opeTok->lhs = token;
+        opeTok->rhs = assignment();
+
+        token = opeTok;
+    }
 
     return token;
 }
@@ -217,6 +238,15 @@ bool Parser::error(Token::EKind kind)
 
     mIsValid = false;
     return mIsValid;
+}
+
+bool Parser::error(const char* message)
+{
+    std::cerr << "pars-err: "
+              << message
+              << std::endl;
+    mIsValid = false;
+    return mIsValid; 
 }
 
 void Parser::setVariableTrait(Token* token)

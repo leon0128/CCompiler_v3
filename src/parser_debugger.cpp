@@ -163,7 +163,7 @@ std::string ParserDebugger::conIntegral(Token* token, std::string disc)
 
         stream << createIndent(mIsValidIndents.size())
                << " `----- "
-               << intTok->value << " ( value )"
+               << intTok->value << " (value)"
                << std::endl;
     #endif
 
