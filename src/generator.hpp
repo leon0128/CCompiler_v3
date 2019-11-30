@@ -33,7 +33,8 @@ private:
     void consume(class Token* token);
     void conParent(class Token* token);
     void conFunction(class Token* token);
-    void conOperator(class Token* token);
+    void conArithmeticOperator(class Token* token);
+    void conAssignmentOperator(class Token* token);
     void conVariable(class Token* token);
     void conIntegral(class Token* token);
 

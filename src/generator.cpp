@@ -50,8 +50,10 @@ void Generator::consume(Token* token)
         conParent(token);
     else if(token->isFunction())
         conFunction(token);
-    else if(token->isOperator())
-        conOperator(token);
+    else if(token->isArithmeticOperator())
+        conArithmeticOperator(token);
+    else if(token->isAssignmentOperator())
+        conAssignmentOperator(token);
     else if(token->isVariable())
         conVariable(token);
     else if(token->isIntegral())
@@ -86,7 +88,7 @@ void Generator::conFunction(Token* token)
     instruction(RET);
 }
 
-void Generator::conOperator(Token* token)
+void Generator::conArithmeticOperator(Token* token)
 {
     OperatorToken* opeTok
         = Token::cast<OperatorToken*>(token);
@@ -119,19 +121,21 @@ void Generator::conOperator(Token* token)
         instruction(IDIV, Operand::RBX);
         instruction(MOV, Operand::RAX, Operand::RDX);
     }
-    else if(opeTok->kind == Token::EQUAL)
-    {
-        VariableToken* varTok
-            = Token::cast<VariableToken*>(opeTok->lhs);
-        
-        instruction(MOV,
-                    Operand(Operand::RBP, -varTok->offset),
-                    Operand::RBX);
-        instruction(MOV, Operand::RAX,
-                    Operand(Operand::RBP, -varTok->offset));
-    }
     else
         error(token);
+}
+
+void Generator::conAssignmentOperator(Token* token)
+{
+    OperatorToken* opeTok
+        = Token::cast<OperatorToken*>(token);
+    VariableToken* varTok
+        = Token::cast<VariableToken*>(opeTok->lhs);
+
+    consume(opeTok->rhs);
+    instruction(MOV,
+                Operand(Operand::RBP, -varTok->offset),
+                Operand::RAX);
 }
 
 void Generator::conVariable(Token* token)

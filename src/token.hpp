@@ -35,6 +35,8 @@ public:
     bool isParent() const;
     bool isFunction() const;
     bool isOperator() const;
+    bool isArithmeticOperator() const;
+    bool isAssignmentOperator() const;
     bool isVariable() const;
     bool isIntegral() const;
     bool isOther() const;

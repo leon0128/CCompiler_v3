@@ -30,12 +30,28 @@ bool Token::isFunction() const
 
 bool Token::isOperator() const
 {
-    if(kind == EQUAL    ||
-       kind == PLUS     ||
+    if(isArithmeticOperator() ||
+       isAssignmentOperator())
+        return true;
+    else
+        return false;
+}
+
+bool Token::isArithmeticOperator() const
+{
+    if(kind == PLUS     ||
        kind == MINUS    ||
        kind == ASTERISK ||
        kind == VIRGULE  ||
        kind == PERCENT)
+        return true;
+    else
+        return false;
+}
+
+bool Token::isAssignmentOperator() const
+{
+    if(kind == EQUAL)
         return true;
     else
         return false;
