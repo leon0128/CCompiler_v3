@@ -3,6 +3,7 @@
 #include "token.hpp"
 
 Parser::Parser():
+    mVariableTraits(),
     mTokens(),
     mParent(nullptr),
     mIndex(0),
@@ -47,10 +48,11 @@ Token* Parser::function()
     ParentToken* parTok
         = new ParentToken();
     
-    while(mIndex < mTokens.size())
+    while(mIndex < mTokens.size() && mIsValid)
         parTok->children.push_back(statement());
     
     funTok->proc = parTok;
+    funTok->offset = mVariableTraits.size() * 8;
     
     return funTok;
 }
@@ -148,8 +150,14 @@ Token* Parser::primary()
 {
     Token* token = nullptr;
 
+    // 変数
+    if(isValid(Token::VARIABLE))
+    {
+        token = mTokens.at(mIndex++);
+        setVariableTrait(token);
+    }
     // 整数値
-    if(isValid(Token::INTEGRAL))
+    else if(isValid(Token::INTEGRAL))
     {
         token = mTokens.at(mIndex++);
     }
@@ -209,4 +217,23 @@ bool Parser::error(Token::EKind kind)
 
     mIsValid = false;
     return mIsValid;
+}
+
+void Parser::setVariableTrait(Token* token)
+{
+    VariableToken* varTok
+        = Token::cast<VariableToken*>(token);
+
+    for(auto&& e : mVariableTraits)
+    {
+        if(varTok->name == e.name)
+        {
+            varTok->offset = e.offset;
+            return;
+        }
+    }
+
+    varTok->offset
+        = (mVariableTraits.size() + 1) * 8;
+    mVariableTraits.push_back(VariableTrait{varTok->name, varTok->offset});
 }

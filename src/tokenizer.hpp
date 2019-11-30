@@ -18,6 +18,7 @@ private:
     void tokenize();
 
     // consume() で使用する関数
+    bool isString(std::string& name);    // string
     bool isIntegral(long& value);        // integral
     bool isOperator(Token::EKind& kind); // operator
     bool isOther(Token::EKind& kind);    // other
@@ -25,6 +26,8 @@ private:
 
     // 数値かどうか
     bool isNumber() const;
+    // アルファベット 又は アンダーバー
+    bool isAlphabet() const; 
     // error 出力
     bool error();
 

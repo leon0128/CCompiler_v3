@@ -34,6 +34,7 @@ private:
     void conParent(class Token* token);
     void conFunction(class Token* token);
     void conOperator(class Token* token);
+    void conVariable(class Token* token);
     void conIntegral(class Token* token);
 
     void instruction(EInstruction inst,

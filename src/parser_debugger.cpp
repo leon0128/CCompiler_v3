@@ -31,6 +31,8 @@ std::string ParserDebugger::consume(Token* token, std::string disc)
             data = conFunction(token, disc);
         else if(token->isOperator())
             data = conOperator(token, disc);
+        else if(token->isVariable())
+            data = conVariable(token, disc);
         else if(token->isIntegral())
             data = conIntegral(token, disc);
         else
@@ -83,10 +85,19 @@ std::string ParserDebugger::conFunction(Token* token, std::string disc)
         FunctionToken* funTok
             = Token::cast<FunctionToken*>(token);
         
+        stream << createIndent(mIsValidIndents.size())
+               << " |----- \""
+               << funTok->name << "\" (name)"
+               << std::endl
+               << createIndent(mIsValidIndents.size())
+               << " |----- "
+               << funTok->offset << " (offset)"
+               << std::endl;
+
         mIsValidIndents.push_back(false);
         stream << createIndent(mIsValidIndents.size() - 1)
                << " `--"
-               << consume(funTok->proc);
+               << consume(funTok->proc, "proc");
         mIsValidIndents.pop_back();
     #endif
 
@@ -105,13 +116,36 @@ std::string ParserDebugger::conOperator(Token* token, std::string disc)
         
         mIsValidIndents.push_back(true);
         stream << createIndent(mIsValidIndents.size() - 1)
-            << " |--"
-            << consume(opeTok->lhs, "lhs");
+               << " |--"
+               << consume(opeTok->lhs, "lhs");
         mIsValidIndents.back() = false;
         stream << createIndent(mIsValidIndents.size() - 1)
-            << " `--"
-            << consume(opeTok->rhs, "rhs");
+               << " `--"
+               << consume(opeTok->rhs, "rhs");
         mIsValidIndents.pop_back();
+    #endif
+
+    std::string data(stream.str());
+    return data;
+}
+
+std::string ParserDebugger::conVariable(Token* token, std::string disc)
+{
+    std::stringstream stream;
+    addNodeHeader(token, stream, disc);
+
+    #if DEBUG_VARIABLE
+        VariableToken* varTok
+            = Token::cast<VariableToken*>(token);
+
+        stream << createIndent(mIsValidIndents.size())
+               << " |----- \""
+               << varTok->name << "\" (name)"
+               << std::endl
+               << createIndent(mIsValidIndents.size())
+               << " `----- "
+               << varTok->offset << " (offset)"
+               << std::endl;
     #endif
 
     std::string data(stream.str());
@@ -128,9 +162,9 @@ std::string ParserDebugger::conIntegral(Token* token, std::string disc)
             = Token::cast<IntegralToken*>(token);
 
         stream << createIndent(mIsValidIndents.size())
-            << " `----- "
-            << intTok->value
-            << std::endl;
+               << " `----- "
+               << intTok->value << " ( value )"
+               << std::endl;
     #endif
 
     std::string data(stream.str());

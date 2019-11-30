@@ -12,8 +12,8 @@ public:
     {
         // parent
         PARENT, 
-        // function
-        FUNCTION,
+        // function, variable
+        FUNCTION, VARIABLE,
         // integral
         INTEGRAL,
         // +, -, *, /, %
@@ -32,7 +32,8 @@ public:
     // 型の判別
     bool isParent() const;
     bool isFunction() const;
-    bool isOperator() const;    
+    bool isOperator() const;
+    bool isVariable() const;
     bool isIntegral() const;
     bool isOther() const;
     
@@ -65,10 +66,12 @@ public:
     FunctionToken(const std::string& inName):
         Token(FUNCTION),
         name(inName),
-        proc(nullptr){}
+        proc(nullptr),
+        offset(0){}
 
     std::string name;
     Token* proc;
+    long offset;
 };
 
 class OperatorToken : public Token
@@ -81,6 +84,18 @@ public:
 
     Token* lhs; // 左辺値
     Token* rhs; // 右辺値
+};
+
+class VariableToken : public Token
+{
+public:
+    VariableToken(const std::string& inName):
+        Token(VARIABLE),
+        name(inName),
+        offset(0){}
+
+    std::string name;
+    long offset;
 };
 
 class IntegralToken : public Token

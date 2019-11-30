@@ -52,6 +52,8 @@ void Generator::consume(Token* token)
         conFunction(token);
     else if(token->isOperator())
         conOperator(token);
+    else if(token->isVariable())
+        conVariable(token);
     else if(token->isIntegral())
         conIntegral(token);
     else
@@ -75,6 +77,7 @@ void Generator::conFunction(Token* token)
     mAssembly << funTok->name << ":" << std::endl;
     instruction(PUSH, Operand::RBP);
     instruction(MOV, Operand::RBP, Operand::RSP);
+    instruction(SUB, Operand::RSP, funTok->offset);
 
     consume(funTok->proc);
 
@@ -116,6 +119,15 @@ void Generator::conOperator(Token* token)
         instruction(IDIV, Operand::RBX);
         instruction(MOV, Operand::RAX, Operand::RDX);
     }
+}
+
+void Generator::conVariable(Token* token)
+{
+    VariableToken* varTok
+        = Token::cast<VariableToken*>(token);
+
+    instruction(MOV, Operand::RAX,
+                Operand(Operand::RBP, -varTok->offset));
 }
 
 void Generator::conIntegral(Token* token)

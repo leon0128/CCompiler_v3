@@ -29,12 +29,15 @@ bool Tokenizer::operator()(std::string& source,
 
 void Tokenizer::tokenize()
 {
+    std::string name;
     long integral = 0;
     Token::EKind kind = Token::INTEGRAL;
 
     while(mIndex < mSource.size() && mIsValid)
     {
-        if(isIntegral(integral))
+        if(isString(name))
+            mTokens.emplace_back(new VariableToken(name));
+        else if(isIntegral(integral))
             mTokens.emplace_back(new IntegralToken(integral));
         else if(isOperator(kind))
             mTokens.emplace_back(new OperatorToken(kind));
@@ -45,6 +48,24 @@ void Tokenizer::tokenize()
         else
             error();
     }
+}
+
+bool Tokenizer::isString(std::string& name)
+{
+    if(!isAlphabet())
+        return false;
+
+    name.clear();
+    while(1)
+    {
+        if(isAlphabet() ||
+           isNumber())
+            name.push_back(mSource.at(mIndex++));
+        else
+            break;
+    }
+
+    return true;
 }
 
 bool Tokenizer::isIntegral(long& value)
@@ -121,9 +142,21 @@ bool Tokenizer::isNumber() const
 
     bool isValid
         = (mSource.at(mIndex) >= '0' &&
-           mSource.at(mIndex) <= '9')
-            ? true : false;
+           mSource.at(mIndex) <= '9');
 
+    return isValid;
+}
+
+bool Tokenizer::isAlphabet() const
+{
+    if(mIndex >= mSource.size())
+        return false;
+    
+    bool isValid
+        = ((mSource.at(mIndex) >= 'a' && mSource.at(mIndex) <= 'z') ||
+           (mSource.at(mIndex) >= 'A' && mSource.at(mIndex) <= 'Z') ||
+           mSource.at(mIndex) == '_');
+    
     return isValid;
 }
 

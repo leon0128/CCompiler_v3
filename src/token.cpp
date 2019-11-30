@@ -5,7 +5,7 @@ std::vector<Token*> Token::TOKENS
 
 const std::unordered_map<Token::EKind, const char*> Token::KIND_NAME_MAP
     = {{PARENT, "PARENT"},
-       {FUNCTION, "FUNCTION"},
+       {FUNCTION, "FUNCTION"}, {VARIABLE, "VARIABLE"},
        {INTEGRAL, "INTEGRAL"},
        {PLUS, "PLUS"}, {MINUS, "MINUS"}, {ASTERISK, "ASTERISK"}, {VIRGULE, "VIRGULE"}, {PERCENT, "PERCENT"},
        {OPEN_BRACKET, "OPEN_BRACKET"}, {CLOSE_BRACKET, "CLOSE_BRACKET"},
@@ -37,6 +37,11 @@ bool Token::isOperator() const
         return true;
     else
         return false;
+}
+
+bool Token::isVariable() const
+{
+    return kind == VARIABLE;
 }
 
 bool Token::isIntegral() const

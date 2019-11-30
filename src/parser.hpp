@@ -24,13 +24,23 @@ private:
     class Token* addition();       // 加減
     class Token* multiplication(); // 乗除余
     class Token* unary();          // 単項
-    class Token* primary();        // 数値、()
+    class Token* primary();        // 変数、数値、() 
 
     bool isValid(Token::EKind kind) const;
     bool isConsumed(Token::EKind kind);
     bool isErrored(Token::EKind kind);
 
     bool error(Token::EKind kind);
+
+    // 変数の情報を格納する構造体 と 配列
+    struct VariableTrait
+    {
+        std::string name;
+        long offset;
+    };
+    std::vector<VariableTrait> mVariableTraits;
+    // 変数に値を設定
+    void setVariableTrait(class Token* token);
 
     std::vector<class Token*> mTokens;
     class Token* mParent;
