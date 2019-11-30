@@ -165,6 +165,8 @@ bool Tokenizer::isOther(Token::EKind& kind)
         kind = Token::OPEN_BRACKET;
     else if(isValid(')'))
         kind = Token::CLOSE_BRACKET;
+    else if(isValid(','))
+        kind = Token::COMMA;
     else if(isValid(';'))
         kind = Token::END;
     else

@@ -14,7 +14,7 @@ const std::unordered_map<Token::EKind, const char*> Token::KIND_NAME_MAP
        {CMP_LESS, "CMP_LESS"}, {CMP_LESS_EQUAL, "CMP_LESS_EQUAL"},
        {CMP_GREATER, "CMP_GREATER"}, {CMP_GREATER_EQUAL, "CMP_GREATER_EQUAL"},
        {OPEN_BRACKET, "OPEN_BRACKET"}, {CLOSE_BRACKET, "CLOSE_BRACKET"},
-       {END, "END"}};
+       {COMMA, "COMMA"}, {END, "END"}};
 
 const std::unordered_map<Token::EType, long> Token::TYPE_SIZE_MAP
     = {{LONG, 8}};

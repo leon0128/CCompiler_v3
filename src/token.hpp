@@ -28,8 +28,8 @@ public:
         CMP_GREATER, CMP_GREATER_EQUAL,
         // (, )
         OPEN_BRACKET, CLOSE_BRACKET,
-        // ;
-        END
+        // ,, ;
+        COMMA, END
     };
     // 型
     enum EType

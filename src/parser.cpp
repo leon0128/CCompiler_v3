@@ -69,15 +69,33 @@ Token* Parser::statement()
 
 Token* Parser::declaration()
 {
+    ParentToken* parTok = new ParentToken();
+
     if(isConsumed(Token::DEC_LONG))
     {
-        if(!isErrored(Token::VARIABLE))
-            return nullptr;
-        addVariableTrait(mTokens.at(--mIndex),
-                         Token::LONG);
+        while(1)
+        {
+            if(!isErrored(Token::VARIABLE))
+                break;
+            
+            addVariableTrait(mTokens.at(--mIndex), Token::LONG);
+
+            Token* token = expression();
+
+            if(token->kind != Token::VARIABLE &&
+               token->kind != Token::EQUAL)
+            {
+                error("invalid variable declaration.");
+                break;
+            }
+
+            parTok->children.push_back(token);
+            if(!isConsumed(Token::COMMA))
+                break;
+        }
     }
 
-    return expression();
+    return parTok;
 }
 
 Token* Parser::expression()
