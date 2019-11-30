@@ -36,17 +36,9 @@ bool Generator::operator()(Token* parent,
 void Generator::generate()
 {
     mAssembly << ".intel_syntax noprefix\n"
-              << ".global main\n\n"
-              << "main:\n";
-
-    instruction(PUSH, Operand::RBP);
-    instruction(MOV, Operand::RBP, Operand::RSP);
+              << ".global main\n\n";
 
     consume(mParent);
-
-    instruction(MOV, Operand::RSP, Operand::RBP);
-    instruction(POP, Operand::RBP);
-    instruction(RET);
 }
 
 void Generator::consume(Token* token)
@@ -56,6 +48,8 @@ void Generator::consume(Token* token)
 
     if(token->isParent())
         conParent(token);
+    else if(token->isFunction())
+        conFunction(token);
     else if(token->isOperator())
         conOperator(token);
     else if(token->isIntegral())
@@ -71,6 +65,22 @@ void Generator::conParent(Token* token)
 
     for(auto&& token : parTok->children)
         consume(token);
+}
+
+void Generator::conFunction(Token* token)
+{
+    FunctionToken* funTok
+        = Token::cast<FunctionToken*>(token);
+
+    mAssembly << funTok->name << ":" << std::endl;
+    instruction(PUSH, Operand::RBP);
+    instruction(MOV, Operand::RBP, Operand::RSP);
+
+    consume(funTok->proc);
+
+    instruction(MOV, Operand::RSP, Operand::RBP);
+    instruction(POP, Operand::RBP);
+    instruction(RET);
 }
 
 void Generator::conOperator(Token* token)

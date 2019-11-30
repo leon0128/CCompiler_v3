@@ -27,6 +27,8 @@ std::string ParserDebugger::consume(Token* token, std::string disc)
     {
         if(token->isParent())
             data = conParent(token, disc);
+        else if(token->isFunction())
+            data = conFunction(token, disc);
         else if(token->isOperator())
             data = conOperator(token, disc);
         else if(token->isIntegral())
@@ -65,6 +67,26 @@ std::string ParserDebugger::conParent(Token* token, std::string disc)
             }
         }
 
+        mIsValidIndents.pop_back();
+    #endif
+
+    std::string data(stream.str());
+    return data;
+}
+
+std::string ParserDebugger::conFunction(Token* token, std::string disc)
+{
+    std::stringstream stream;
+    addNodeHeader(token, stream, disc);
+
+    #if DEBUG_FUNCTION
+        FunctionToken* funTok
+            = Token::cast<FunctionToken*>(token);
+        
+        mIsValidIndents.push_back(false);
+        stream << createIndent(mIsValidIndents.size() - 1)
+               << " `--"
+               << consume(funTok->proc);
         mIsValidIndents.pop_back();
     #endif
 

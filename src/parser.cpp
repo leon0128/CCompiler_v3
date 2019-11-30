@@ -34,13 +34,25 @@ void Parser::parse()
 
 Token* Parser::unit()
 {
+    Token* token = function();
+
+    return token;
+}
+
+Token* Parser::function()
+{
+    FunctionToken* funTok
+        = new FunctionToken("main");
+    
     ParentToken* parTok
         = new ParentToken();
-
+    
     while(mIndex < mTokens.size())
         parTok->children.push_back(statement());
-
-    return parTok;
+    
+    funTok->proc = parTok;
+    
+    return funTok;
 }
 
 Token* Parser::statement()

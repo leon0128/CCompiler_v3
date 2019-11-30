@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 #include <unordered_map>
 
 class Token
@@ -10,7 +11,9 @@ public:
     enum EKind
     {
         // parent
-        PARENT,
+        PARENT, 
+        // function
+        FUNCTION,
         // integral
         INTEGRAL,
         // +, -, *, /, %
@@ -28,6 +31,7 @@ public:
 
     // 型の判別
     bool isParent() const;
+    bool isFunction() const;
     bool isOperator() const;    
     bool isIntegral() const;
     bool isOther() const;
@@ -55,6 +59,18 @@ public:
     std::vector<Token*> children;
 };
 
+class FunctionToken : public Token
+{
+public:
+    FunctionToken(const std::string& inName):
+        Token(FUNCTION),
+        name(inName),
+        proc(nullptr){}
+
+    std::string name;
+    Token* proc;
+};
+
 class OperatorToken : public Token
 {
 public:
@@ -62,7 +78,6 @@ public:
         Token(inKind),
         lhs(nullptr),
         rhs(nullptr){}
-    ~OperatorToken(){}
 
     Token* lhs; // 左辺値
     Token* rhs; // 右辺値
