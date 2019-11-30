@@ -6,6 +6,9 @@
 
 class Operand
 {
+private:
+    static const std::unordered_map<long, const char*> SPECIFICATION_SIZE_MAP;
+
 public:
     enum ERegister
     {
@@ -43,7 +46,7 @@ public:
     Operand();
     Operand(long value);
     Operand(ERegister reg);
-    Operand(ERegister reg, long offset);
+    Operand(class Token* token);
 
     ~Operand();
 

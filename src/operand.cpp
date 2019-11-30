@@ -1,4 +1,8 @@
 #include "operand.hpp"
+#include "token.hpp"
+
+const std::unordered_map<long, const char*> Operand::SPECIFICATION_SIZE_MAP
+    = {{1, "BYTE PTR"}, {2, "WORD PTR"}, {4, "DWORD PTR"}, {8, "QWORD PTR"}};
 
 const std::unordered_map<Operand::ERegister, const char*> Operand::REGISTER_NAME_MAP
     = {{Operand::RAX,     "rax"}, {Operand::RBX,     "rbx"}, {Operand::RCX,     "rcx"}, {Operand::RDX,     "rdx"},
@@ -46,14 +50,17 @@ Operand::Operand(ERegister reg):
 {
 }
 
-Operand::Operand(ERegister reg, long offset):
+Operand::Operand(Token* token):
     mString()
 {
+    VariableToken* varTok
+        = Token::cast<VariableToken*>(token);
+
     std::stringstream stream;
-    stream << "QWORD PTR "
-           << "[" << REGISTER_NAME_MAP.at(reg)
-           << ((offset >= 0) ? " + " : " - ")
-           << std::abs(offset) << "]";
+    stream << SPECIFICATION_SIZE_MAP.at(Token::TYPE_SIZE_MAP.at(varTok->type))
+           << " [" << REGISTER_NAME_MAP.at(RBP)
+           << ((varTok->offset <= 0) ? " + " : " - ")
+           << std::abs(varTok->offset) << "]";
     mString = stream.str();
 }
 

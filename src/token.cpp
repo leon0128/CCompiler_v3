@@ -6,6 +6,7 @@ std::vector<Token*> Token::TOKENS
 const std::unordered_map<Token::EKind, const char*> Token::KIND_NAME_MAP
     = {{PARENT, "PARENT"},
        {FUNCTION, "FUNCTION"}, {VARIABLE, "VARIABLE"},
+       {DEC_LONG, "DEC_LONG"},
        {INTEGRAL, "INTEGRAL"},
        {EQUAL, "EQUAL"}, {NOT, "NOT"},
        {PLUS, "PLUS"}, {MINUS, "MINUS"}, {ASTERISK, "ASTERISK"}, {VIRGULE, "VIRGULE"}, {PERCENT, "PERCENT"},
@@ -14,6 +15,9 @@ const std::unordered_map<Token::EKind, const char*> Token::KIND_NAME_MAP
        {CMP_GREATER, "CMP_GREATER"}, {CMP_GREATER_EQUAL, "CMP_GREATER_EQUAL"},
        {OPEN_BRACKET, "OPEN_BRACKET"}, {CLOSE_BRACKET, "CLOSE_BRACKET"},
        {END, "END"}};
+
+const std::unordered_map<Token::EType, long> Token::TYPE_SIZE_MAP
+    = {{LONG, 8}};
 
 Token::Token(EKind inKind):
     kind(inKind)
@@ -29,6 +33,14 @@ bool Token::isParent() const
 bool Token::isFunction() const
 {
     return kind == FUNCTION;
+}
+
+bool Token::isDeclaration() const
+{
+    if(kind == DEC_LONG)
+        return true;
+    else
+        return false;
 }
 
 bool Token::isOperator() const

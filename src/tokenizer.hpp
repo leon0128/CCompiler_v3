@@ -4,9 +4,13 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <unordered_map>
 
 class Tokenizer
 {
+private:
+    static const std::unordered_map<std::string, Token::EKind> RESERVED_WORD_MAP;
+
 public:
     Tokenizer();
     ~Tokenizer();
@@ -18,7 +22,7 @@ private:
     void tokenize();
 
     // consume() で使用する関数
-    bool isString(std::string& name);    // string
+    bool isString(std::string& name, Token::EKind& kind); // string
     bool isIntegral(long& value);        // integral
     bool isOperator(Token::EKind& kind); // operator
     bool isOther(Token::EKind& kind);    // other

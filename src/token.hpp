@@ -14,6 +14,8 @@ public:
         PARENT, 
         // function, variable
         FUNCTION, VARIABLE,
+        // declaration
+        DEC_LONG,
         // integral
         INTEGRAL,
         // =, !
@@ -29,6 +31,11 @@ public:
         // ;
         END
     };
+    // 型
+    enum EType
+    {
+        LONG
+    };
 
     // 特殊関数
     Token(EKind inKind);
@@ -38,6 +45,7 @@ public:
     // 型の判別
     bool isParent() const;
     bool isFunction() const;
+    bool isDeclaration() const;
     bool isOperator() const;
     bool isArithmeticOperator() const;
     bool isAssignmentOperator() const;
@@ -54,6 +62,8 @@ public:
 
     // トークンの種類と文字列のマップ
     static const std::unordered_map<EKind, const char*> KIND_NAME_MAP;
+    // 型の大きさ
+    static const std::unordered_map<EType, long> TYPE_SIZE_MAP;
 private:
     // 作成したトークンを格納
     static std::vector<Token*> TOKENS;
@@ -91,8 +101,8 @@ public:
         lhs(nullptr),
         rhs(nullptr){}
 
-    Token* lhs; // 左辺値
-    Token* rhs; // 右辺値
+    Token* lhs;
+    Token* rhs;
 };
 
 class VariableToken : public Token
@@ -100,9 +110,11 @@ class VariableToken : public Token
 public:
     VariableToken(const std::string& inName):
         Token(VARIABLE),
+        type(LONG),
         name(inName),
         offset(0){}
 
+    EType type;
     std::string name;
     long offset;
 };

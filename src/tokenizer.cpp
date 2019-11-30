@@ -2,6 +2,9 @@
 #include "debugger.hpp"
 #include "token.hpp"
 
+const std::unordered_map<std::string, Token::EKind> Tokenizer::RESERVED_WORD_MAP
+    = {{"long", Token::DEC_LONG}};
+
 Tokenizer::Tokenizer():
     mSource(),
     mTokens(),
@@ -35,8 +38,13 @@ void Tokenizer::tokenize()
 
     while(mIndex < mSource.size() && mIsValid)
     {
-        if(isString(name))
-            mTokens.emplace_back(new VariableToken(name));
+        if(isString(name, kind))
+        {
+            if(kind == Token::VARIABLE)
+                mTokens.emplace_back(new VariableToken(name));
+            else
+                mTokens.emplace_back(new Token(kind));
+        }
         else if(isIntegral(integral))
             mTokens.emplace_back(new IntegralToken(integral));
         else if(isOperator(kind))
@@ -50,12 +58,13 @@ void Tokenizer::tokenize()
     }
 }
 
-bool Tokenizer::isString(std::string& name)
+bool Tokenizer::isString(std::string& name, Token::EKind& kind)
 {
     if(!isAlphabet())
         return false;
 
     name.clear();
+    kind = Token::VARIABLE;
     while(1)
     {
         if(isAlphabet() ||
@@ -63,6 +72,15 @@ bool Tokenizer::isString(std::string& name)
             name.push_back(mSource.at(mIndex++));
         else
             break;
+    }
+
+    for(auto&& pair : RESERVED_WORD_MAP)
+    {
+        if(pair.first == name)
+        {
+            kind = pair.second;
+            break;
+        }
     }
 
     return true;

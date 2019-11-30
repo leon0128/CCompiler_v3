@@ -59,12 +59,25 @@ Token* Parser::function()
 
 Token* Parser::statement()
 {
-    Token* token = expression();
+    Token* token = declaration();
     
     if(!isErrored(Token::END))
         token = nullptr;
 
     return token;
+}
+
+Token* Parser::declaration()
+{
+    if(isConsumed(Token::DEC_LONG))
+    {
+        if(!isErrored(Token::VARIABLE))
+            return nullptr;
+        addVariableTrait(mTokens.at(--mIndex),
+                         Token::LONG);
+    }
+
+    return expression();
 }
 
 Token* Parser::expression()
@@ -299,6 +312,27 @@ bool Parser::error(const char* message)
     return mIsValid; 
 }
 
+void Parser::addVariableTrait(Token* token, Token::EType type)
+{
+    VariableToken* varTok
+        = Token::cast<VariableToken*>(token);
+
+    for(auto&& e : mVariableTraits)
+    {
+        if(varTok->name == e.name)
+        {
+            error("variable opverloading.");
+            return;
+        }
+    }
+
+    varTok->offset
+        = (mVariableTraits.size() + 1) * 8;
+    mVariableTraits.push_back(VariableTrait{varTok->type,
+                                            varTok->name,
+                                            varTok->offset});
+}
+
 void Parser::setVariableTrait(Token* token)
 {
     VariableToken* varTok
@@ -308,12 +342,11 @@ void Parser::setVariableTrait(Token* token)
     {
         if(varTok->name == e.name)
         {
+            varTok->type =  e.type;
             varTok->offset = e.offset;
             return;
         }
     }
 
-    varTok->offset
-        = (mVariableTraits.size() + 1) * 8;
-    mVariableTraits.push_back(VariableTrait{varTok->name, varTok->offset});
+    error("variable not defined.");
 }

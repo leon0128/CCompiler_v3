@@ -20,6 +20,7 @@ private:
     class Token* unit();           // ファイル全体
     class Token* function();       // 関数
     class Token* statement();      // 文
+    class Token* declaration();    // 宣言
     class Token* expression();     // 式
     class Token* assignment();     // 代入
     class Token* equality();       // 比較(等)
@@ -39,11 +40,12 @@ private:
     // 変数の情報を格納する構造体 と 配列
     struct VariableTrait
     {
+        Token::EType type;
         std::string name;
         long offset;
     };
     std::vector<VariableTrait> mVariableTraits;
-    // 変数に値を設定
+    void addVariableTrait(class Token* token, Token::EType type);
     void setVariableTrait(class Token* token);
 
     std::vector<class Token*> mTokens;
