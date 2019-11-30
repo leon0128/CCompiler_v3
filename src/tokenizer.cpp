@@ -95,8 +95,8 @@ bool Tokenizer::isIntegral(long& value)
     while(1)
     {
         if(isNumber())
-            value += value * 10 +
-                     mSource.at(mIndex++) - '0';
+            value = value * 10 +
+                    mSource.at(mIndex++) - '0';
         else
             break;
     }
