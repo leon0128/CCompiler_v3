@@ -28,12 +28,6 @@ bool TraitsManager::addTrait(Token* token, Token::EType type)
     VariableToken* varTok
         = Token::cast<VariableToken*>(token);
 
-    for(auto&& e : mTraits)
-    {
-        if(varTok->name == e.name)
-            return error(token, "variable overloading");
-    }
-
     for(auto iter = mTraits.rbegin();
         iter != mTraits.rend();
         iter++)

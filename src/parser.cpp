@@ -48,16 +48,35 @@ Token* Parser::function()
     FunctionToken* funTok
         = new FunctionToken("main");
     
-    ParentToken* parTok
-        = new ParentToken();
-    
-    while(mIndex < mTokens.size() && mIsValid)
-        parTok->children.push_back(statement());
-    
-    funTok->proc = parTok;
+    funTok->proc = block();
     funTok->offset = mTraitsManager->mTraits.size() * 8;
     
     return funTok;
+}
+
+Token* Parser::block()
+{
+    ParentToken* parTok
+        = new ParentToken();
+
+    if(!isErrored(Token::OPEN_BLOCK))
+        return nullptr;
+    
+    mTraitsManager->incScope();
+    while(1)
+    {
+        if(isConsumed(Token::CLOSE_BLOCK) ||
+           !mIsValid)
+            break;
+        
+        if(isValid(Token::OPEN_BLOCK))
+            parTok->children.push_back(block());
+        else
+            parTok->children.push_back(statement());
+    }
+    mTraitsManager->decScope();
+
+    return parTok;
 }
 
 Token* Parser::statement()
