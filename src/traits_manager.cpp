@@ -37,7 +37,7 @@ bool TraitsManager::addTrait(Token* token, Token::EType type)
     mTraits.push_back(Trait{mScope,
                             type,
                             varTok->name,
-                            (mTraits.size() + 1) * 8});
+                            static_cast<long>((mTraits.size() + 1) * 8)});
     return setTrait(token);
 }
 

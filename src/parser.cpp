@@ -1,18 +1,21 @@
 #include "parser.hpp"
 #include "debugger.hpp"
 #include "token.hpp"
+#include "traits_manager.hpp"
 
 Parser::Parser():
-    mVariableTraits(),
     mTokens(),
     mParent(nullptr),
     mIndex(0),
+    mTraitsManager(nullptr),
     mIsValid(true)
 {
+    mTraitsManager = new TraitsManager();
 }
 
 Parser::~Parser()
 {
+    delete mTraitsManager;
 }
 
 bool Parser::operator()(std::vector<Token*>& tokens,
@@ -52,7 +55,7 @@ Token* Parser::function()
         parTok->children.push_back(statement());
     
     funTok->proc = parTok;
-    funTok->offset = mVariableTraits.size() * 8;
+    funTok->offset = mTraitsManager->mTraits.size() * 8;
     
     return funTok;
 }
@@ -82,7 +85,7 @@ Token* Parser::declaration()
             if(!isErrored(Token::VARIABLE))
                 break;
             
-            addVariableTrait(mTokens.at(--mIndex), type);
+            mTraitsManager->addTrait(mTokens.at(--mIndex), type);
 
             Token* token = expression();
 
@@ -264,7 +267,7 @@ Token* Parser::primary()
     if(isValid(Token::VARIABLE))
     {
         token = mTokens.at(mIndex++);
-        setVariableTrait(token);
+        mTraitsManager->setTrait(token);
     }
     // 整数値
     else if(isValid(Token::INTEGRAL))
@@ -336,43 +339,4 @@ bool Parser::error(const char* message)
               << std::endl;
     mIsValid = false;
     return mIsValid; 
-}
-
-void Parser::addVariableTrait(Token* token, Token::EType type)
-{
-    VariableToken* varTok
-        = Token::cast<VariableToken*>(token);
-
-    for(auto&& e : mVariableTraits)
-    {
-        if(varTok->name == e.name)
-        {
-            error("variable opverloading.");
-            return;
-        }
-    }
-
-    varTok->offset
-        = (mVariableTraits.size() + 1) * 8;
-    mVariableTraits.push_back(VariableTrait{type,
-                                            varTok->name,
-                                            varTok->offset});
-}
-
-void Parser::setVariableTrait(Token* token)
-{
-    VariableToken* varTok
-        = Token::cast<VariableToken*>(token);
-
-    for(auto&& e : mVariableTraits)
-    {
-        if(varTok->name == e.name)
-        {
-            varTok->type =  e.type;
-            varTok->offset = e.offset;
-            return;
-        }
-    }
-
-    error("variable not defined.");
 }

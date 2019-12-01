@@ -19,6 +19,7 @@ private:
     // parse() で使用する関数
     class Token* unit();           // ファイル全体
     class Token* function();       // 関数
+    class Token* block();          // ブロック
     class Token* statement();      // 文
     class Token* declaration();    // 宣言
     class Token* expression();     // 式
@@ -37,19 +38,9 @@ private:
     bool error(Token::EKind kind);
     bool error(const char* message);
 
-    // 変数の情報を格納する構造体 と 配列
-    struct VariableTrait
-    {
-        Token::EType type;
-        std::string name;
-        long offset;
-    };
-    std::vector<VariableTrait> mVariableTraits;
-    void addVariableTrait(class Token* token, Token::EType type);
-    void setVariableTrait(class Token* token);
-
     std::vector<class Token*> mTokens;
     class Token* mParent;
     std::size_t mIndex;
+    class TraitsManager* mTraitsManager;
     bool mIsValid;
 };
