@@ -34,6 +34,19 @@ bool TraitsManager::addTrait(Token* token, Token::EType type)
             return error(token, "variable overloading");
     }
 
+    for(auto iter = mTraits.rbegin();
+        iter != mTraits.rend();
+        iter++)
+    {
+        if(iter->scope == mScope)
+        {
+            if(iter->name == varTok->name)
+                return error(token, "variable overloading");
+        }
+        else
+            break;
+    }
+
     mTraits.push_back(Trait{mScope,
                             type,
                             varTok->name,
@@ -65,7 +78,7 @@ bool TraitsManager::error(Token* token, const char* message) const
         = Token::cast<VariableToken*>(token);
 
     std::cerr << "trai-err: " << message
-              << " ( " << varTok->name << " )."
+              << " ( \"" << varTok->name << "\" )."
               << std::endl;
             
     return false;
