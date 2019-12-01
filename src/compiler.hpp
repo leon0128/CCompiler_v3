@@ -26,6 +26,7 @@ private:
     class Tokenizer*    mTokenizer;    // Tokenizer class
     class Parser*       mParser;       // Parser class
     class Generator*    mGenerator;    // Generator class
+    class Assembler*    mAssembler;    // Assembler class
     
     std::string               mSource;   // source code
     std::vector<class Token*> mTokens;   // token array
