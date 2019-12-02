@@ -38,13 +38,24 @@ void Parser::parse()
 
 Token* Parser::unit()
 {
-    Token* token = function();
+    ParentToken* parTok
+        = new ParentToken();
 
-    return token;
+    while(mIndex < mTokens.size())
+        parTok->children.push_back(function());
+
+    return parTok;
 }
 
 Token* Parser::function()
 {
+    if(mTokens.at(mIndex)->isDeclaration())
+    {
+        Token::EType type
+            = Token::TYPE_DEC_MAP.at(mTokens.at(mIndex)->kind);
+        
+    }
+
     FunctionToken* funTok
         = new FunctionToken("main");
     
