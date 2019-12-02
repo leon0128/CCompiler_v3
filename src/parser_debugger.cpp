@@ -31,6 +31,8 @@ std::string ParserDebugger::consume(Token* token, std::string disc)
             data = conFunction(token, disc);
         else if(token->isOperator())
             data = conOperator(token, disc);
+        else if(token->isReturn())
+            data = conReturn(token, disc);
         else if(token->isVariable())
             data = conVariable(token, disc);
         else if(token->isIntegral())
@@ -122,6 +124,26 @@ std::string ParserDebugger::conOperator(Token* token, std::string disc)
         stream << createIndent(mIsValidIndents.size() - 1)
                << " `--"
                << consume(opeTok->rhs, "rhs");
+        mIsValidIndents.pop_back();
+    #endif
+
+    std::string data(stream.str());
+    return data;
+}
+
+std::string ParserDebugger::conReturn(Token* token, std::string disc)
+{
+    std::stringstream stream;
+    addNodeHeader(token, stream, disc);
+
+    #if DEBUG_RETURN
+        ReturnToken* retTok
+            = Token::cast<ReturnToken*>(token);
+
+        mIsValidIndents.push_back(false);
+        stream << createIndent(mIsValidIndents.size() - 1)
+               << " `--"
+               << consume(retTok->expr, "expr");
         mIsValidIndents.pop_back();
     #endif
 

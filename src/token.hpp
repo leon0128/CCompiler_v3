@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <iostream>
 #include <string>
 #include <unordered_map>
 
@@ -26,6 +27,8 @@ public:
         CMP_EQUAL, CMP_NOT_EQUAL,
         CMP_LESS, CMP_LESS_EQUAL,
         CMP_GREATER, CMP_GREATER_EQUAL,
+        // return
+        RETURN,
         // (, ), {, }
         OPEN_BRACKET, CLOSE_BRACKET, OPEN_BLOCK, CLOSE_BLOCK,
         // ,, ;
@@ -50,13 +53,20 @@ public:
     bool isArithmeticOperator() const;
     bool isAssignmentOperator() const;
     bool isCompareOperator() const;
+    bool isReturn() const;
     bool isVariable() const;
     bool isIntegral() const;
     bool isOther() const;
     
     // dynamic_cast をラップ
     template<typename T>
-    static T cast(Token* token){return dynamic_cast<T>(token);}
+    static T cast(Token* token)
+    {
+        T casTok = dynamic_cast<T>(token);   
+        if(!casTok)
+            std::cerr << "toke-err: failed to dynamic_cast." << std::endl;
+        return casTok;
+    }
     // トークンの開放
     static void destroy();
 
@@ -107,6 +117,16 @@ public:
 
     Token* lhs;
     Token* rhs;
+};
+
+class ReturnToken : public Token
+{
+public:
+    ReturnToken():
+        Token(RETURN),
+        expr(nullptr){}
+
+    Token* expr;
 };
 
 class VariableToken : public Token

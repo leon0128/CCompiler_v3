@@ -58,6 +58,8 @@ void Generator::consume(Token* token)
         conAssignmentOperator(token);
     else if(token->isCompareOperator())
         conCompareOperator(token);
+    else if(token->isReturn())
+        conReturn(token);
     else if(token->isVariable())
         conVariable(token);
     else if(token->isIntegral())
@@ -169,6 +171,18 @@ void Generator::conCompareOperator(Token* token)
         error(token);
     
     instruction(MOVZX, Operand::RAX, Operand::AL);
+}
+
+void Generator::conReturn(Token* token)
+{
+    ReturnToken* retTok
+        = Token::cast<ReturnToken*>(token);
+    
+    consume(retTok->expr);
+    
+    instruction(MOV, Operand::RSP, Operand::RBP);
+    instruction(POP, Operand::RBP);
+    instruction(RET);
 }
 
 void Generator::conVariable(Token* token)

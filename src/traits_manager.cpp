@@ -2,7 +2,8 @@
 
 TraitsManager::TraitsManager():
     mTraits(),
-    mScope(0)
+    mScope(0),
+    mOffsetCount(0)
 {
 }
 
@@ -12,7 +13,7 @@ TraitsManager::~TraitsManager()
 
 void TraitsManager::decScope()
 {
-    while(1)
+    while(!mTraits.empty())
     {
         if(mTraits.back().scope == mScope)
             mTraits.pop_back();
@@ -41,6 +42,7 @@ bool TraitsManager::addTrait(Token* token, Token::EType type)
             break;
     }
 
+    mOffsetCount += 8;
     mTraits.push_back(Trait{mScope,
                             type,
                             varTok->name,

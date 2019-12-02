@@ -12,7 +12,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-gcc as.s -g3
+gcc as.s -O0
 
 if [ $? -ne 0 ]; then
     echo "test-err: failed to assemble."

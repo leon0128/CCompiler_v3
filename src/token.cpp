@@ -13,6 +13,7 @@ const std::unordered_map<Token::EKind, const char*> Token::KIND_NAME_MAP
        {CMP_EQUAL, "CMP_EQUAL"}, {CMP_NOT_EQUAL, "CMP_NOT_EQUAL"},
        {CMP_LESS, "CMP_LESS"}, {CMP_LESS_EQUAL, "CMP_LESS_EQUAL"},
        {CMP_GREATER, "CMP_GREATER"}, {CMP_GREATER_EQUAL, "CMP_GREATER_EQUAL"},
+       {RETURN, "RETURN"},
        {OPEN_BRACKET, "OPEN_BRACKET"}, {CLOSE_BRACKET, "CLOSE_BRACKET"}, {OPEN_BLOCK, "OPEN_BLOCK"}, {CLOSE_BLOCK, "CLOSE_BLOCK"},
        {COMMA, "COMMA"}, {END, "END"}};
 
@@ -93,6 +94,11 @@ bool Token::isCompareOperator() const
         return true;
     else
         return false;
+}
+
+bool Token::isReturn() const
+{
+    return kind == RETURN;
 }
 
 bool Token::isVariable() const

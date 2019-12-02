@@ -3,7 +3,6 @@
 #include "tokenizer.hpp"
 #include "parser.hpp"
 #include "generator.hpp"
-#include "assembler.hpp"
 #include "token.hpp"
 #include "file_manager.hpp"
 
@@ -15,7 +14,6 @@ Compiler::Compiler():
     mTokenizer(nullptr),
     mParser(nullptr),
     mGenerator(nullptr),
-    mAssembler(nullptr),
     mSource(),
     mTokens(),
     mParent(nullptr),
@@ -25,12 +23,10 @@ Compiler::Compiler():
     mTokenizer    = new Tokenizer();
     mParser       = new Parser();
     mGenerator    = new Generator();
-    mAssembler    = new Assembler();
 }
 
 Compiler::~Compiler()
 {
-    delete mAssembler;
     delete mGenerator;
     delete mParser;
     delete mTokenizer;
@@ -49,8 +45,6 @@ bool Compiler::operator()(int argc, char** argv)
         return error("failed to parse.");
     if(!(*mGenerator)(mParent, mAssembly))
         return error("failed to generate.");
-    if(!(*mAssembler)(mAssembly))
-        return error("failed to assemble");
 
     std::string tmp(mAssembly.str());
     FileManager::write(RESULT_FILENAME, tmp.c_str());

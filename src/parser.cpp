@@ -49,7 +49,7 @@ Token* Parser::function()
         = new FunctionToken("main");
     
     funTok->proc = block();
-    funTok->offset = mTraitsManager->mTraits.size() * 8;
+    funTok->offset = mTraitsManager->mOffsetCount;
     
     return funTok;
 }
@@ -81,8 +81,20 @@ Token* Parser::block()
 
 Token* Parser::statement()
 {
-    Token* token = declaration();
-    
+    Token* token = nullptr;
+
+    // return
+    if(mTokens.at(mIndex)->isReturn())
+    {
+        ReturnToken* retTok
+            = Token::cast<ReturnToken*>(mTokens.at(mIndex++));
+
+        retTok->expr = expression();
+        token = retTok;
+    }
+    else
+        token = declaration();
+
     if(!isErrored(Token::END))
         token = nullptr;
 

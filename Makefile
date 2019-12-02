@@ -1,6 +1,6 @@
 CXX      = g++-8
 CXXFLAGS = -std=c++11 $(DEBFLAGS)
-DEBFLAGS = -g3 -Wall -O0
+DEBFLAGS = -g3 -Wall
 OBJS     = $(patsubst %.cpp, %.o, $(wildcard $(SRCDIR)*.cpp))
 PROGRAM  = Compiler
 

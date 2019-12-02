@@ -31,4 +31,5 @@ private:
 
     std::vector<Trait> mTraits;
     long mScope;
+    std::size_t mOffsetCount;
 };
