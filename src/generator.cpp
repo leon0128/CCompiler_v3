@@ -3,12 +3,12 @@
 #include "token.hpp"
 
 const std::unordered_map<Generator::EInstruction, std::pair<const char*, std::size_t>> Generator::INSTRUCTION_MAP
-    = {{MOV,   {"mov   ", 2}}, {MOVZX, {"movzx ", 2}},
+    = {{MOV,   {"mov   ", 2}}, {MOVZX, {"movzx ", 2}}, {MOVSX, {"movsx ", 2}},
        {PUSH,  {"push  ", 1}}, {POP,   {"pop   ", 1}},
        {CMP,   {"cmp   ", 2}},
        {SETE,  {"sete  ", 1}}, {SETNE, {"setne ", 1}}, {SETL,  {"setl  ", 1}}, {SETLE, {"setle ", 1}}, {SETG,  {"setg  ", 1}}, {SETGE, {"setge", 1}},
        {ADD,   {"add   ", 2}}, {SUB,   {"sub   ", 2}}, {IMUL,  {"imul  ", 1}}, {IDIV,  {"idiv  ", 1}},
-       {CQO,   {"cqo   ", 0}},
+       {CQO,   {"cqo   ", 0}}, {CDQE,  {"cdqe  ", 0}},
        {RET,   {"ret   ", 0}}};
 
 Generator::Generator():
@@ -38,6 +38,7 @@ bool Generator::operator()(Token* parent,
 void Generator::generate()
 {
     mAssembly << ".intel_syntax noprefix\n"
+              << ".section .text\n"
               << ".global main\n\n";
 
     consume(mParent);
@@ -187,7 +188,17 @@ void Generator::conReturn(Token* token)
 
 void Generator::conVariable(Token* token)
 {
+    VariableToken* varTok
+        = Token::cast<VariableToken*>(token);
+
     instruction(MOV, Operand::shrinkAccum(token), token);
+    
+    if(Token::TYPE_SIZE_MAP.at(varTok->type) == 1)
+        instruction(MOVSX, Operand::RAX, Operand::AL);
+    else if(Token::TYPE_SIZE_MAP.at(varTok->type) == 2)
+        instruction(MOVSX, Operand::RAX, Operand::AX);
+    else if(Token::TYPE_SIZE_MAP.at(varTok->type) == 4)
+        instruction(CDQE);
 }
 
 void Generator::conIntegral(Token* token)

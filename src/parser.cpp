@@ -41,7 +41,7 @@ Token* Parser::unit()
     ParentToken* parTok
         = new ParentToken();
 
-    while(mIndex < mTokens.size())
+    while(mIndex < mTokens.size() && mIsValid)
         parTok->children.push_back(function());
 
     return parTok;
@@ -49,13 +49,6 @@ Token* Parser::unit()
 
 Token* Parser::function()
 {
-    if(mTokens.at(mIndex)->isDeclaration())
-    {
-        Token::EType type
-            = Token::TYPE_DEC_MAP.at(mTokens.at(mIndex)->kind);
-        
-    }
-
     FunctionToken* funTok
         = new FunctionToken("main");
     

@@ -11,12 +11,12 @@ class Generator
     // 命令一覧
     enum EInstruction
     {
-        MOV, MOVZX, // 代入
+        MOV, MOVZX, MOVSX,// 代入
         PUSH, POP,  // スタック操作
         CMP,        // 比較
         SETE, SETNE, SETL, SETLE, SETG, SETGE, // フラグ
         ADD, SUB, IMUL, IDIV, // 四則演算 (符号付)
-        CQO, // 拡張
+        CQO, CDQE,  // 拡張
         RET  // 関数
     };
     // <[命令文字列], [引数の個数]> を 値として持つ マップ
