@@ -13,8 +13,8 @@ public:
     {
         // parent
         PARENT, 
-        // function, variable
-        FUNCTION, VARIABLE,
+        // function, call, variable
+        FUNCTION, CALL, VARIABLE,
         // declaration
         DEC_LONG, DEC_INT, DEC_SHORT, DEC_CHAR,
         // integral
@@ -48,6 +48,7 @@ public:
     // 型の判別
     bool isParent() const;
     bool isFunction() const;
+    bool isCall() const;
     bool isDeclaration() const;
     bool isOperator() const;
     bool isArithmeticOperator() const;
@@ -96,15 +97,32 @@ public:
 class FunctionToken : public Token
 {
 public:
-    FunctionToken(const std::string& inName):
+    FunctionToken(const std::string& inName, EType inType):
         Token(FUNCTION),
+        type(inType),
         name(inName),
+        argsType(),
         proc(nullptr),
         offset(0){}
 
+    EType type;
     std::string name;
+    std::vector<EType> argsType;
     Token* proc;
     long offset;
+};
+
+class CallToken : public Token
+{
+public:
+    CallToken(std::string& inName):
+        type(INT),
+        name(inName),
+        args(){}
+
+    EType type;
+    std::string name;
+    std::vector<Token*> args;
 };
 
 class OperatorToken : public Token

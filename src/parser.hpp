@@ -38,6 +38,11 @@ private:
     bool error(Token::EKind kind);
     bool error(const char* message);
 
+    // 関数の引数の型を格納する
+    // 第二引数は プロトタイプ宣言か
+    bool setArgsType(std::vector<Token::EType>& argsType,
+                     bool isPrototype = false);
+
     std::vector<class Token*> mTokens;
     class Token* mParent;
     std::size_t mIndex;

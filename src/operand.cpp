@@ -76,7 +76,7 @@ Operand::Operand(Token* token):
     std::stringstream stream;
     stream << SPECIFICATION_SIZE_MAP.at(Token::TYPE_SIZE_MAP.at(varTok->type))
            << " [" << REGISTER_NAME_MAP.at(RBP)
-           << ((varTok->offset <= 0) ? " + " : " - ")
+           << ((varTok->offset >= 0) ? " + " : " - ")
            << std::abs(varTok->offset) << "]";
     mString = stream.str();
 }

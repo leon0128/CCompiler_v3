@@ -30,8 +30,11 @@ private:
     void incScope(){mScope++;}
     void decScope();
 
-    bool addFunctionTrait(Token* token);
-    bool addVariableTrait(Token* token);
+    bool addFunctionTrait(Token* token);     // 関数の名前と戻り値型
+    bool addFunctionArgsTrait(Token* token); // 関数の引数型
+    bool addVariableTrait(Token* token,
+                          bool isLocal = true);
+    bool setFunctionTrait(Token* token) const;
     bool setVariableTrait(Token* token) const;
 
     bool error(Token* token, const char* message) const;
@@ -40,4 +43,6 @@ private:
     std::vector<VariableTrait> mVariableTraits;
     long mScope;
     std::size_t mOffsetCount;
+    long mLocalOffset;
+    long mArgOffset;
 };

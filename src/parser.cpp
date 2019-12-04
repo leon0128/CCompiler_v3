@@ -49,13 +49,41 @@ Token* Parser::unit()
 
 Token* Parser::function()
 {
-    FunctionToken* funTok
-        = new FunctionToken("main");
+    Token* token = nullptr;
+
+    if(mTokens.at(mIndex)->isDeclaration())
+    {
+        Token::EType type
+            = Token::TYPE_DEC_MAP.at(mTokens.at(mIndex)->kind);
+
+        mIndex++;
+        if(!isErrored(Token::VARIABLE))
+            return token;
+
+        VariableToken* varTok
+            = Token::cast<VariableToken*>(mTokens.at(mIndex - 1));
+        FunctionToken* funTok
+            = new FunctionToken(varTok->name, type);
+        std::vector<Token::EType> argsType;
+
+        mTraitsManager->addFunctionTrait(funTok);
+        mTraitsManager->incScope();
+        setArgsType(argsType, false);
+        funTok->argsType = argsType;
+        mTraitsManager->addFunctionArgsTrait(funTok);
+
+        funTok->proc = block();
+        funTok->offset = mTraitsManager->mOffsetCount;
+
+        mTraitsManager->decScope();
+        mTraitsManager->mOffsetCount = 0;
+
+        token = funTok;
+    }
+    else
+        isErrored(Token::DEC_INT);
     
-    funTok->proc = block();
-    funTok->offset = mTraitsManager->mOffsetCount;
-    
-    return funTok;
+    return token;
 }
 
 Token* Parser::block()
@@ -120,7 +148,11 @@ Token* Parser::declaration()
             if(!isErrored(Token::VARIABLE))
                 break;
             
-            mTraitsManager->addVariableTrait(mTokens.at(--mIndex), type);
+            VariableToken* varTok
+                = Token::cast<VariableToken*>(mTokens.at(--mIndex));
+            varTok->type = type;
+
+            mTraitsManager->addVariableTrait(varTok);
 
             Token* token = expression();
 
@@ -298,11 +330,27 @@ Token* Parser::primary()
 {
     Token* token = nullptr;
 
-    // 変数
+    // 変数, 関数
     if(isValid(Token::VARIABLE))
     {
-        token = mTokens.at(mIndex++);
-        mTraitsManager->setVariableTrait(token);
+        VariableToken* varTok
+            = Token::cast<VariableToken*>(mTokens.at(mIndex++));
+
+        if(isConsumed(Token::OPEN_BRACKET))
+        {
+            CallToken* calTok
+                = new CallToken(varTok->name, )
+
+            while(1)
+            {
+                
+            }
+        }
+        else
+        {
+            mTraitsManager->setVariableTrait(varTok);
+            token = varTok;
+        }
     }
     // 整数値
     else if(isValid(Token::INTEGRAL))
@@ -374,4 +422,46 @@ bool Parser::error(const char* message)
               << std::endl;
     mIsValid = false;
     return mIsValid; 
+}
+
+bool Parser::setArgsType(std::vector<Token::EType>& argsType,
+                         bool isPrototype)
+{
+    if(!isErrored(Token::OPEN_BRACKET))
+        return false;
+    if(isConsumed(Token::CLOSE_BRACKET))
+        return true;
+    
+    while(1)
+    {
+        if(!mTokens.at(mIndex)->isDeclaration())
+            return isErrored(Token::DEC_INT);
+
+        argsType.push_back(Token::TYPE_DEC_MAP.at(mTokens.at(mIndex)->kind));
+
+        if(isPrototype)
+        {
+
+        }
+        else
+        {
+            mIndex++;
+            if(!isErrored(Token::VARIABLE))
+                return false;
+            
+            VariableToken* varTok
+                = Token::cast<VariableToken*>(mTokens.at(mIndex - 1));
+            varTok->type = argsType.back();
+            mTraitsManager->addVariableTrait(varTok, false);
+        }
+
+        if(isConsumed(Token::COMMA))
+            continue;
+        else if(!isErrored(Token::CLOSE_BRACKET))
+            return false;
+        else
+            break;
+    }
+
+    return true;
 }

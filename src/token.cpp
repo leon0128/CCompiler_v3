@@ -42,6 +42,11 @@ bool Token::isFunction() const
     return kind == FUNCTION;
 }
 
+bool Token::isCall() const
+{
+    return kind == CALL;
+}
+
 bool Token::isDeclaration() const
 {
     if(kind == DEC_LONG  ||

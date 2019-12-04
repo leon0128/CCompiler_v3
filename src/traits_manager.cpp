@@ -4,7 +4,9 @@ TraitsManager::TraitsManager():
     mFunctionTraits(),
     mVariableTraits(),
     mScope(0),
-    mOffsetCount(0)
+    mOffsetCount(0),
+    mLocalOffset(0),
+    mArgOffset(0)
 {
 }
 
@@ -51,7 +53,24 @@ bool TraitsManager::addFunctionTrait(Token* token)
     return true;
 }
 
-bool TraitsManager::addVariableTrait(Token* token)
+bool TraitsManager::addFunctionArgsTrait(Token* token)
+{
+    FunctionToken* funTok
+        = Token::cast<FunctionToken*>(token);
+
+    for(auto&& e : mFunctionTraits)
+    {
+        if(e.name == funTok->name)
+        {
+            e.argsType = funTok->argsType;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool TraitsManager::addVariableTrait(Token* token, bool isLocal)
 {
     VariableToken* varTok
         = Token::cast<VariableToken*>(token);
@@ -78,13 +97,41 @@ bool TraitsManager::addVariableTrait(Token* token)
         else
             break;
     }
-
-    mOffsetCount += 8;
-    mVariableTraits.push_back(VariableTrait{mScope,
-                                            varTok->type,
-                                            varTok->name,
-                                            static_cast<long>((mVariableTraits.size() + 1) * 8)});
+    
+    if(isLocal)
+    {
+        mOffsetCount += 8;
+        mLocalOffset += 8;
+        mVariableTraits.push_back(VariableTrait{mScope,
+                                                varTok->type,
+                                                varTok->name,
+                                                -mLocalOffset});
+    }
+    else
+    {
+        mArgOffset += 8;
+        mVariableTraits.push_back(VariableTrait{mScope,
+                                                varTok->type,
+                                                varTok->name,
+                                                mArgOffset});
+    }
     return setVariableTrait(token);
+}
+
+bool TraitsManager::setFunctionTrait(Token* token) const
+{
+    CallToken* calTok
+        = Token::cast<CallToken*>(token);
+
+    for(auto&& e : mFunctionTraits)
+    {
+        if(e.name == calTok->name)
+        {
+            calTok->args
+                = std::vector<Token*>(e.argsType.size());
+            return true;
+        }
+    }
 }
 
 bool TraitsManager::setVariableTrait(Token* token) const
