@@ -88,11 +88,23 @@ std::string ParserDebugger::conFunction(Token* token, std::string disc)
             = Token::cast<FunctionToken*>(token);
         
         stream << createIndent(mIsValidIndents.size())
+               << " |----- "
+               << Token::TYPE_NAME_MAP.at(funTok->type) << " (type)"
+               << std::endl
+               << createIndent(mIsValidIndents.size())
                << " |----- \""
                << funTok->name << "\" (name)"
                << std::endl
-               << createIndent(mIsValidIndents.size())
-               << " |----- "
+               << createIndent(mIsValidIndents.size());
+        
+        for(std::size_t i = 0; i < funTok->argsType.size(); i++)
+        {
+            stream << createIndent(mIsValidIndents.size())
+                   << " |----- "
+                   << Token::TYPE_NAME_MAP.at(funTok->argsType.at(i))
+                   << " (arg " << i << ")" << std::endl;
+        }
+        stream << " |----- "
                << funTok->offset << " (offset)"
                << std::endl;
 
