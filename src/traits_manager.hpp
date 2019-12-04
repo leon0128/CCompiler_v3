@@ -13,6 +13,12 @@ private:
     TraitsManager();
     ~TraitsManager();
 
+    struct FunctionTrait
+    {
+        Token::EType type;
+        std::string name;
+        std::vector<Token::EType> argsType;
+    };
     struct VariableTrait
     {
         long scope;
@@ -24,11 +30,13 @@ private:
     void incScope(){mScope++;}
     void decScope();
 
-    bool addVariableTrait(Token* token, Token::EType type);
+    bool addFunctionTrait(Token* token);
+    bool addVariableTrait(Token* token);
     bool setVariableTrait(Token* token) const;
 
     bool error(Token* token, const char* message) const;
 
+    std::vector<FunctionTrait> mFunctionTraits;
     std::vector<VariableTrait> mVariableTraits;
     long mScope;
     std::size_t mOffsetCount;

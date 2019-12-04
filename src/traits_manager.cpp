@@ -1,6 +1,7 @@
 #include "traits_manager.hpp"
 
 TraitsManager::TraitsManager():
+    mFunctionTraits(),
     mVariableTraits(),
     mScope(0),
     mOffsetCount(0)
@@ -24,11 +25,47 @@ void TraitsManager::decScope()
     mScope--;
 }
 
-bool TraitsManager::addVariableTrait(Token* token, Token::EType type)
+bool TraitsManager::addFunctionTrait(Token* token)
+{
+    FunctionToken* funTok
+        = Token::cast<FunctionToken*>(token);
+    
+    for(auto iter = mFunctionTraits.begin();
+        iter != mFunctionTraits.end();
+        iter++)
+    {
+        if(iter->name == funTok->name)
+            return error(token, "function overloading.");
+    }
+    for(auto iter = mVariableTraits.begin();
+        iter != mVariableTraits.end();
+        iter++)
+    {
+        if(iter->name == funTok->name)
+            return error(token, "variable with the same name exists.");
+    }
+
+    mFunctionTraits.emplace_back(FunctionTrait{funTok->type,
+                                               funTok->name,
+                                               funTok->argsType});
+    return true;
+}
+
+bool TraitsManager::addVariableTrait(Token* token)
 {
     VariableToken* varTok
         = Token::cast<VariableToken*>(token);
 
+    if(mScope == 0)
+    {
+        for(auto iter = mFunctionTraits.begin();
+            iter != mFunctionTraits.end();
+            iter++)
+        {
+            if(iter->name == varTok->name)
+                return error(token, "function with the same name exists.");
+        }
+    }
     for(auto iter = mVariableTraits.rbegin();
         iter != mVariableTraits.rend();
         iter++)
@@ -44,7 +81,7 @@ bool TraitsManager::addVariableTrait(Token* token, Token::EType type)
 
     mOffsetCount += 8;
     mVariableTraits.push_back(VariableTrait{mScope,
-                                            type,
+                                            varTok->type,
                                             varTok->name,
                                             static_cast<long>((mVariableTraits.size() + 1) * 8)});
     return setVariableTrait(token);
@@ -70,11 +107,23 @@ bool TraitsManager::setVariableTrait(Token* token) const
 
 bool TraitsManager::error(Token* token, const char* message) const
 {
-    VariableToken* varTok
-        = Token::cast<VariableToken*>(token);
+    std::string name;
+
+    if(token->isVariable())
+    {
+        VariableToken* varTok
+            = Token::cast<VariableToken*>(token);
+        name = varTok->name;
+    }
+    else if(token->isFunction())
+    {
+        FunctionToken* funTok
+            = Token::cast<FunctionToken*>(token);
+        name = funTok->name;
+    }
 
     std::cerr << "trai-err: " << message
-              << " ( \"" << varTok->name << "\" )."
+              << " ( \"" << name << "\" )."
               << std::endl;
             
     return false;
