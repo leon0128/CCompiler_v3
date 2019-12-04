@@ -42,7 +42,7 @@ Token* Parser::unit()
         = new ParentToken();
 
     while(mIndex < mTokens.size() && mIsValid)
-        parTok->children.push_back(function());
+          parTok->children.push_back(function());
 
     return parTok;
 }
@@ -120,7 +120,7 @@ Token* Parser::declaration()
             if(!isErrored(Token::VARIABLE))
                 break;
             
-            mTraitsManager->addTrait(mTokens.at(--mIndex), type);
+            mTraitsManager->addVariableTrait(mTokens.at(--mIndex), type);
 
             Token* token = expression();
 
@@ -302,7 +302,7 @@ Token* Parser::primary()
     if(isValid(Token::VARIABLE))
     {
         token = mTokens.at(mIndex++);
-        mTraitsManager->setTrait(token);
+        mTraitsManager->setVariableTrait(token);
     }
     // 整数値
     else if(isValid(Token::INTEGRAL))

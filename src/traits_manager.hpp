@@ -13,7 +13,7 @@ private:
     TraitsManager();
     ~TraitsManager();
 
-    struct Trait
+    struct VariableTrait
     {
         long scope;
         Token::EType type;
@@ -24,12 +24,12 @@ private:
     void incScope(){mScope++;}
     void decScope();
 
-    bool addTrait(Token* token, Token::EType type);
-    bool setTrait(Token* token) const;
+    bool addVariableTrait(Token* token, Token::EType type);
+    bool setVariableTrait(Token* token) const;
 
     bool error(Token* token, const char* message) const;
 
-    std::vector<Trait> mTraits;
+    std::vector<VariableTrait> mVariableTraits;
     long mScope;
     std::size_t mOffsetCount;
 };

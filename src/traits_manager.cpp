@@ -1,7 +1,7 @@
 #include "traits_manager.hpp"
 
 TraitsManager::TraitsManager():
-    mTraits(),
+    mVariableTraits(),
     mScope(0),
     mOffsetCount(0)
 {
@@ -13,10 +13,10 @@ TraitsManager::~TraitsManager()
 
 void TraitsManager::decScope()
 {
-    while(!mTraits.empty())
+    while(!mVariableTraits.empty())
     {
-        if(mTraits.back().scope == mScope)
-            mTraits.pop_back();
+        if(mVariableTraits.back().scope == mScope)
+            mVariableTraits.pop_back();
         else
             break;
     }
@@ -24,13 +24,13 @@ void TraitsManager::decScope()
     mScope--;
 }
 
-bool TraitsManager::addTrait(Token* token, Token::EType type)
+bool TraitsManager::addVariableTrait(Token* token, Token::EType type)
 {
     VariableToken* varTok
         = Token::cast<VariableToken*>(token);
 
-    for(auto iter = mTraits.rbegin();
-        iter != mTraits.rend();
+    for(auto iter = mVariableTraits.rbegin();
+        iter != mVariableTraits.rend();
         iter++)
     {
         if(iter->scope == mScope)
@@ -43,19 +43,19 @@ bool TraitsManager::addTrait(Token* token, Token::EType type)
     }
 
     mOffsetCount += 8;
-    mTraits.push_back(Trait{mScope,
-                            type,
-                            varTok->name,
-                            static_cast<long>((mTraits.size() + 1) * 8)});
-    return setTrait(token);
+    mVariableTraits.push_back(VariableTrait{mScope,
+                                            type,
+                                            varTok->name,
+                                            static_cast<long>((mVariableTraits.size() + 1) * 8)});
+    return setVariableTrait(token);
 }
 
-bool TraitsManager::setTrait(Token* token) const
+bool TraitsManager::setVariableTrait(Token* token) const
 {
     VariableToken* varTok
         = Token::cast<VariableToken*>(token);
 
-    for(auto&& e : mTraits)
+    for(auto&& e : mVariableTraits)
     {
         if(varTok->name == e.name)
         {
