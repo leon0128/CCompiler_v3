@@ -26,11 +26,6 @@ private:
     class Tokenizer*    mTokenizer;    // Tokenizer class
     class Parser*       mParser;       // Parser class
     class Generator*    mGenerator;    // Generator class
-    
-    std::string               mSource;   // source code
-    std::vector<class Token*> mTokens;   // token array
-    class Token*              mParent;   // parent token
-    std::stringstream         mAssembly; // assembly
 
     bool mIsValid;
 };

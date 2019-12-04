@@ -1,6 +1,7 @@
 #include "generator.hpp"
 #include "debugger.hpp"
 #include "token.hpp"
+#include "static_data.hpp"
 
 const std::unordered_map<Generator::EInstruction, std::pair<const char*, std::size_t>> Generator::INSTRUCTION_MAP
     = {{MOV,   {"mov   ", 2}}, {MOVZX, {"movzx ", 2}}, {MOVSX, {"movsx ", 2}},
@@ -12,8 +13,6 @@ const std::unordered_map<Generator::EInstruction, std::pair<const char*, std::si
        {RET,   {"ret   ", 0}}};
 
 Generator::Generator():
-    mParent(nullptr),
-    mAssembly(),
     mIsValid(true)
 {
 }
@@ -22,26 +21,21 @@ Generator::~Generator()
 {
 }
 
-bool Generator::operator()(Token* parent,
-                           std::stringstream& assembly)
+bool Generator::operator()()
 {
-    mParent = parent;
-
     generate();
 
-    Debugger::generator(mAssembly);
-
-    assembly.swap(mAssembly);
+    Debugger::generator(DATA::GENERATOR_DATA);
     return mIsValid;
 }
 
 void Generator::generate()
 {
-    mAssembly << ".intel_syntax noprefix\n"
-              << ".section .text\n"
-              << ".global main\n\n";
+    DATA::GENERATOR_DATA << ".intel_syntax noprefix\n"
+                         << ".section .text\n"
+                         << ".global main\n\n";
 
-    consume(mParent);
+    consume(DATA::PARSER_DATA);
 }
 
 void Generator::consume(Token* token)
@@ -83,7 +77,7 @@ void Generator::conFunction(Token* token)
     FunctionToken* funTok
         = Token::cast<FunctionToken*>(token);
 
-    mAssembly << funTok->name << ":" << std::endl;
+    DATA::GENERATOR_DATA << funTok->name << ":" << std::endl;
     instruction(PUSH, Operand::RBP);
     instruction(MOV, Operand::RBP, Operand::RSP);
     instruction(SUB, Operand::RSP, funTok->offset);
@@ -93,6 +87,7 @@ void Generator::conFunction(Token* token)
     instruction(MOV, Operand::RSP, Operand::RBP);
     instruction(POP, Operand::RBP);
     instruction(RET);
+    DATA::GENERATOR_DATA << std::endl;
 }
 
 void Generator::conArithmeticOperator(Token* token)
@@ -218,18 +213,18 @@ void Generator::instruction(EInstruction inst,
     auto pair = INSTRUCTION_MAP.at(inst);
     Operand opes[] = {ope1, ope2, ope3, ope4};
 
-    mAssembly << "    "
+    DATA::GENERATOR_DATA << "    "
               << pair.first;
 
     for(std::size_t i = 0; i < pair.second; i++)
     {
         if(i != pair.second - 1)
-            mAssembly << opes[i]() << ", ";
+            DATA::GENERATOR_DATA << opes[i]() << ", ";
         else
-            mAssembly << opes[i]();
+            DATA::GENERATOR_DATA << opes[i]();
     }
 
-    mAssembly << "\n";
+    DATA::GENERATOR_DATA << "\n";
 }
 
 bool Generator::error(Token* token)

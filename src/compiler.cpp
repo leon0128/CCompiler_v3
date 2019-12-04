@@ -5,6 +5,7 @@
 #include "generator.hpp"
 #include "token.hpp"
 #include "file_manager.hpp"
+#include "static_data.hpp"
 
 const char* Compiler::RESULT_FILENAME
     = "as.s";
@@ -14,9 +15,6 @@ Compiler::Compiler():
     mTokenizer(nullptr),
     mParser(nullptr),
     mGenerator(nullptr),
-    mSource(),
-    mTokens(),
-    mParent(nullptr),
     mIsValid(true)
 {
     mPreprocessor = new Preprocessor();
@@ -37,17 +35,17 @@ Compiler::~Compiler()
 
 bool Compiler::operator()(int argc, char** argv)
 {
-    if(!(*mPreprocessor)(argc, argv, mSource))
+    if(!(*mPreprocessor)(argc, argv))
         return error("failed to preprocess.");
-    if(!(*mTokenizer)(mSource, mTokens))
+    if(!(*mTokenizer)())
         return error("failed to tokenize.");
-    if(!(*mParser)(mTokens, mParent))
+    if(!(*mParser)())
         return error("failed to parse.");
-    if(!(*mGenerator)(mParent, mAssembly))
+    if(!(*mGenerator)())
         return error("failed to generate.");
 
-    std::string tmp(mAssembly.str());
-    FileManager::write(RESULT_FILENAME, tmp.c_str());
+    FileManager::write(RESULT_FILENAME,
+                       DATA::GENERATOR_DATA);
 
     return mIsValid;
 }

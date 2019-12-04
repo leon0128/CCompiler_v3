@@ -15,8 +15,7 @@ public:
     Tokenizer();
     ~Tokenizer();
 
-    bool operator()(std::string& source,
-                    std::vector<class Token*>& tokens);
+    bool operator()();
 
 private:
     void tokenize();
@@ -34,8 +33,6 @@ private:
     // error 出力
     bool error();
 
-    std::string mSource;
-    std::vector<class Token*> mTokens;
     std::size_t mIndex;
     bool mIsValid;
 };

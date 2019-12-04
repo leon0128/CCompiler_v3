@@ -120,18 +120,7 @@ bool TraitsManager::addVariableTrait(Token* token, bool isLocal)
 
 bool TraitsManager::setFunctionTrait(Token* token) const
 {
-    CallToken* calTok
-        = Token::cast<CallToken*>(token);
-
-    for(auto&& e : mFunctionTraits)
-    {
-        if(e.name == calTok->name)
-        {
-            calTok->args
-                = std::vector<Token*>(e.argsType.size());
-            return true;
-        }
-    }
+    return true;
 }
 
 bool TraitsManager::setVariableTrait(Token* token) const

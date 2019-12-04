@@ -26,8 +26,7 @@ public:
     Generator();
     ~Generator();
 
-    bool operator()(class Token* parent,
-                    std::stringstream& assembly);
+    bool operator()();
     
 private:
     void generate();
@@ -50,7 +49,5 @@ private:
 
     bool error(class Token* token);
 
-    class Token* mParent;
-    std::stringstream mAssembly;
     bool mIsValid;
 };

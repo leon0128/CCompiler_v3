@@ -1,14 +1,13 @@
 #include "tokenizer.hpp"
 #include "debugger.hpp"
 #include "token.hpp"
+#include "static_data.hpp"
 
 const std::unordered_map<std::string, Token::EKind> Tokenizer::RESERVED_WORD_MAP
     = {{"long", Token::DEC_LONG}, {"int", Token::DEC_INT}, {"short", Token::DEC_SHORT}, {"char", Token::DEC_CHAR},
        {"return", Token::RETURN}};
 
 Tokenizer::Tokenizer():
-    mSource(),
-    mTokens(),
     mIndex(0),
     mIsValid(true)
 {
@@ -18,16 +17,12 @@ Tokenizer::~Tokenizer()
 {
 }
 
-bool Tokenizer::operator()(std::string& source,
-                           std::vector<Token*>& tokens)
+bool Tokenizer::operator()()
 {
-    mSource.swap(source);
-
     tokenize();
+    
+    Debugger::tokenizer(DATA::TOKENIZER_DATA);
 
-    Debugger::tokenizer(mTokens);
-
-    tokens.swap(mTokens);
     return mIsValid;
 }
 
@@ -37,23 +32,23 @@ void Tokenizer::tokenize()
     long integral = 0;
     Token::EKind kind = Token::INTEGRAL;
 
-    while(mIndex < mSource.size() && mIsValid)
+    while(mIndex < DATA::PREPROCESSER_DATA.size() && mIsValid)
     {
         if(isString(name, kind))
         {
             if(kind == Token::VARIABLE)
-                mTokens.emplace_back(new VariableToken(name));
+                DATA::TOKENIZER_DATA.emplace_back(new VariableToken(name));
             else if(kind == Token::RETURN)
-                mTokens.emplace_back(new ReturnToken());
+                DATA::TOKENIZER_DATA.emplace_back(new ReturnToken());
             else
-                mTokens.emplace_back(new Token(kind));
+                DATA::TOKENIZER_DATA.emplace_back(new Token(kind));
         }
         else if(isIntegral(integral))
-            mTokens.emplace_back(new IntegralToken(integral));
+            DATA::TOKENIZER_DATA.emplace_back(new IntegralToken(integral));
         else if(isOperator(kind))
-            mTokens.emplace_back(new OperatorToken(kind));
+            DATA::TOKENIZER_DATA.emplace_back(new OperatorToken(kind));
         else if(isOther(kind))
-            mTokens.emplace_back(new Token(kind));
+            DATA::TOKENIZER_DATA.emplace_back(new Token(kind));
         else if(isIgnore())
             ;
         else
@@ -72,7 +67,7 @@ bool Tokenizer::isString(std::string& name, Token::EKind& kind)
     {
         if(isAlphabet() ||
            isNumber())
-            name.push_back(mSource.at(mIndex++));
+            name.push_back(DATA::PREPROCESSER_DATA.at(mIndex++));
         else
             break;
     }
@@ -99,7 +94,7 @@ bool Tokenizer::isIntegral(long& value)
     {
         if(isNumber())
             value = value * 10 +
-                    mSource.at(mIndex++) - '0';
+                    DATA::PREPROCESSER_DATA.at(mIndex++) - '0';
         else
             break;
     }
@@ -196,33 +191,33 @@ bool Tokenizer::isIgnore()
 
 bool Tokenizer::isValid(char c) const
 {
-    if(mIndex >= mSource.size())
+    if(mIndex >= DATA::PREPROCESSER_DATA.size())
         return false;
     
-    return (c == mSource.at(mIndex));
+    return (c == DATA::PREPROCESSER_DATA.at(mIndex));
 }
 
 bool Tokenizer::isNumber() const
 {
-    if(mIndex >= mSource.size())
+    if(mIndex >= DATA::PREPROCESSER_DATA.size())
         return false;
 
     bool isValid
-        = (mSource.at(mIndex) >= '0' &&
-           mSource.at(mIndex) <= '9');
+        = (DATA::PREPROCESSER_DATA.at(mIndex) >= '0' &&
+           DATA::PREPROCESSER_DATA.at(mIndex) <= '9');
 
     return isValid;
 }
 
 bool Tokenizer::isAlphabet() const
 {
-    if(mIndex >= mSource.size())
+    if(mIndex >= DATA::PREPROCESSER_DATA.size())
         return false;
     
     bool isValid
-        = ((mSource.at(mIndex) >= 'a' && mSource.at(mIndex) <= 'z') ||
-           (mSource.at(mIndex) >= 'A' && mSource.at(mIndex) <= 'Z') ||
-           mSource.at(mIndex) == '_');
+        = ((DATA::PREPROCESSER_DATA.at(mIndex) >= 'a' && DATA::PREPROCESSER_DATA.at(mIndex) <= 'z') ||
+           (DATA::PREPROCESSER_DATA.at(mIndex) >= 'A' && DATA::PREPROCESSER_DATA.at(mIndex) <= 'Z') ||
+           DATA::PREPROCESSER_DATA.at(mIndex) == '_');
     
     return isValid;
 }
@@ -230,7 +225,7 @@ bool Tokenizer::isAlphabet() const
 bool Tokenizer::error()
 {
     std::cerr << "toke-err: unsupported characters "
-              << "( " << mSource.at(mIndex) << " )." << std::endl;
+              << "( " << DATA::PREPROCESSER_DATA.at(mIndex) << " )." << std::endl;
     
     mIsValid = false;
     return mIsValid;

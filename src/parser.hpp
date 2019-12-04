@@ -10,8 +10,7 @@ public:
     Parser();
     ~Parser();
 
-    bool operator()(std::vector<class Token*>& tokens,
-                    class Token*& parent);
+    bool operator()();
 
 private:
     void parse();
@@ -43,8 +42,6 @@ private:
     bool setArgsType(std::vector<Token::EType>& argsType,
                      bool isPrototype = false);
 
-    std::vector<class Token*> mTokens;
-    class Token* mParent;
     std::size_t mIndex;
     class TraitsManager* mTraitsManager;
     bool mIsValid;
