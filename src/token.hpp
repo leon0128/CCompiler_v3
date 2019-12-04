@@ -116,6 +116,7 @@ class CallToken : public Token
 {
 public:
     CallToken(std::string& inName):
+        Token(CALL),
         type(INT),
         name(inName),
         args(){}
