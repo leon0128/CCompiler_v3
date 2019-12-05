@@ -1,5 +1,6 @@
 #pragma once
 
+#include "operand.hpp"
 #include <vector>
 #include <iostream>
 #include <string>
@@ -155,11 +156,13 @@ public:
         Token(VARIABLE),
         type(LONG),
         name(inName),
-        offset(0){}
+        offset(0),
+        isArg(false){}
 
     EType type;
     std::string name;
-    long offset;
+    long offset; // ローカル変数の場合は rbp からの offset, 仮引数の場合は index
+    bool isArg;
 };
 
 class IntegralToken : public Token

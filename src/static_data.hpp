@@ -12,6 +12,7 @@ namespace DATA
 struct FunctionTrait
 {
     std::string name; // 関数名
+    std::vector<Token::EType> argsType; // 引数型
 };
 
 // 関数特性を格納するコンテナ

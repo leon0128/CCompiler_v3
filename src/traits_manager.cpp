@@ -1,12 +1,12 @@
 #include "traits_manager.hpp"
+#include "static_data.hpp"
 
 TraitsManager::TraitsManager():
     mFunctionTraits(),
     mVariableTraits(),
     mScope(0),
     mOffsetCount(0),
-    mLocalOffset(0),
-    mArgOffset(0)
+    mLocalOffset(0)
 {
 }
 
@@ -71,7 +71,7 @@ bool TraitsManager::addFunctionArgsTrait(Token* token)
     return false;
 }
 
-bool TraitsManager::addVariableTrait(Token* token, bool isLocal)
+bool TraitsManager::addVariableTrait(Token* token, bool isLocal, long argIndex)
 {
     VariableToken* varTok
         = Token::cast<VariableToken*>(token);
@@ -106,15 +106,16 @@ bool TraitsManager::addVariableTrait(Token* token, bool isLocal)
         mVariableTraits.push_back(VariableTrait{mScope,
                                                 varTok->type,
                                                 varTok->name,
-                                                -mLocalOffset});
+                                                -mLocalOffset,
+                                                !isLocal});
     }
     else
     {
-        mArgOffset += 8;
         mVariableTraits.push_back(VariableTrait{mScope,
                                                 varTok->type,
                                                 varTok->name,
-                                                mArgOffset});
+                                                argIndex,
+                                                isLocal});
     }
     return setVariableTrait(token);
 }
@@ -135,6 +136,7 @@ bool TraitsManager::setVariableTrait(Token* token) const
         {
             varTok->type   = e.type;
             varTok->offset = e.offset;
+            varTok->isArg  = e.isArg;
             return true;
         }
     }

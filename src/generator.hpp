@@ -17,7 +17,7 @@ class Generator
         SETE, SETNE, SETL, SETLE, SETG, SETGE, // フラグ
         ADD, SUB, IMUL, IDIV, // 四則演算 (符号付)
         CQO, CDQE,  // 拡張
-        RET  // 関数
+        CALL, RET  // 関数
     };
     // <[命令文字列], [引数の個数]> を 値として持つ マップ
     static const std::unordered_map<EInstruction, std::pair<const char*, std::size_t>> INSTRUCTION_MAP;
@@ -34,6 +34,7 @@ private:
     void consume(class Token* token);
     void conParent(class Token* token);
     void conFunction(class Token* token);
+    void conCall(class Token* token);
     void conArithmeticOperator(class Token* token);
     void conAssignmentOperator(class Token* token);
     void conCompareOperator(class Token* token);

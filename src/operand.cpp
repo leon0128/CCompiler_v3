@@ -4,6 +4,9 @@
 const std::unordered_map<long, const char*> Operand::SPECIFICATION_SIZE_MAP
     = {{1, "BYTE PTR"}, {2, "WORD PTR"}, {4, "DWORD PTR"}, {8, "QWORD PTR"}};
 
+const std::array<Operand::ERegister, 7> ARG_REGISTER_ARRAY
+    = {RDI, RSI, RDX, RCX, R10, R8, R9};
+
 const std::unordered_map<Operand::ERegister, const char*> Operand::REGISTER_NAME_MAP
     = {{Operand::RAX,     "rax"}, {Operand::RBX,     "rbx"}, {Operand::RCX,     "rcx"}, {Operand::RDX,     "rdx"},
        {Operand::RSI,     "rsi"}, {Operand::RDI,     "rdi"}, {Operand::RSP,     "rsp"}, {Operand::RBP,     "rbp"},
@@ -67,19 +70,32 @@ Operand::Operand(ERegister reg):
 {
 }
 
+Operand::Operand(std::string& str)
+    mString(str)
+{
+}
+
 Operand::Operand(Token* token):
     mString()
 {
     VariableToken* varTok
         = Token::cast<VariableToken*>(token);
 
-    std::stringstream stream;
-    stream << SPECIFICATION_SIZE_MAP.at(Token::TYPE_SIZE_MAP.at(varTok->type))
-           << " [" << REGISTER_NAME_MAP.at(RBP)
-           << ((varTok->offset >= 0) ? " + " : " - ")
-           << std::abs(varTok->offset) << "]";
-    mString = stream.str();
+    if(!varTok->isArg)
+    {
+        std::stringstream stream;
+        stream << SPECIFICATION_SIZE_MAP.at(Token::TYPE_SIZE_MAP.at(varTok->type))
+            << " [" << REGISTER_NAME_MAP.at(RBP)
+            << ((varTok->offset >= 0) ? " + " : " - ")
+            << std::abs(varTok->offset) << "]";
+        mString = stream.str();
+    }
+    else
+        mString = ARG_REGISTER_ARRAY.at(varTok->offset);
 }
+
+Operand::Operand(const Operand& other):
+    Operand(other());
 
 Operand::~Operand()
 {

@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <unordered_map>
+#include <array>
 
 class Operand
 {
@@ -42,14 +43,19 @@ public:
         YMM8, YMM9, YMM10, YMM11, YMM12, YMM13, YMM14, YMM15
     };
     static const std::unordered_map<ERegister, const char*> REGISTER_NAME_MAP;
+    static const std::array<ERegister, 7> ARG_REGISTER_ARRAY;
 
     // 変数の大きさに合わせて アキュームレジスタ の使用する領域の変更
     static ERegister shrinkAccum(class Token* token);
+    // 引数のインデックスを元に 使用するレジスタの取得
+    static ERegister argRegister(std::size_t index){return ARG_REGISTER_ARRAY.at(index);}
 
     Operand();
     Operand(long value);
     Operand(ERegister reg);
+    Operand(std::string& str);
     Operand(class Token* token);
+    Operand(const Operand& other);
 
     ~Operand();
 

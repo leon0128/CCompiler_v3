@@ -10,7 +10,7 @@ const std::unordered_map<Generator::EInstruction, std::pair<const char*, std::si
        {SETE,  {"sete  ", 1}}, {SETNE, {"setne ", 1}}, {SETL,  {"setl  ", 1}}, {SETLE, {"setle ", 1}}, {SETG,  {"setg  ", 1}}, {SETGE, {"setge", 1}},
        {ADD,   {"add   ", 2}}, {SUB,   {"sub   ", 2}}, {IMUL,  {"imul  ", 1}}, {IDIV,  {"idiv  ", 1}},
        {CQO,   {"cqo   ", 0}}, {CDQE,  {"cdqe  ", 0}},
-       {RET,   {"ret   ", 0}}};
+       {CALL,  {"call  ", 1}}, {RET,   {"ret   ", 0}}};
 
 Generator::Generator():
     mIsValid(true)
@@ -33,7 +33,15 @@ void Generator::generate()
 {
     DATA::GENERATOR_DATA() << ".intel_syntax noprefix\n"
                            << ".section .text\n"
-                           << ".global main\n\n";
+                           << ".global ";
+
+    for(std::size_t i = 0; i < DATA::FUNCTION_TRAITS().size(); i++)
+    {
+        if(i != DATA::FUNCTION_TRAITS().size() - 1)
+            DATA::GENERATOR_DATA() << DATA::FUNCTION_TRAITS().at(i) << ", ";
+        else
+            DATA::GENERATOR_DATA() << DATA::FUNCTION_TRAITS.at(i) << std::endl;
+    }
 
     consume(DATA::PARSER_DATA());
 }
@@ -47,6 +55,8 @@ void Generator::consume(Token* token)
         conParent(token);
     else if(token->isFunction())
         conFunction(token);
+    else if(token->isCall())
+        conCall(token);
     else if(token->isArithmeticOperator())
         conArithmeticOperator(token);
     else if(token->isAssignmentOperator())
@@ -88,6 +98,38 @@ void Generator::conFunction(Token* token)
     instruction(POP, Operand::RBP);
     instruction(RET);
     DATA::GENERATOR_DATA() << std::endl;
+}
+
+void Generator::conCall(Token* token)
+{
+    CallToken* calTok
+        = Token::cast<CallToken*>(token);
+
+    std::size_t callerArgSize = 0;
+    for(auto&& e : DATA::FUNCTION_TRAITS())
+    {
+        if(e.name == calTok->name)
+        {
+            callerArgSize = e.argsType.size();
+            break;
+        }
+    }
+
+    for(std::size_t i = callerArgSize; i > 0; i--)
+        instruction(PUSH, Operand::argRegister(i - 1));
+
+    for(auto&& e : calTok->args)
+    {
+        consume(e);
+        instruction(PUSH, Operand::RAX);
+    }
+    for(std::size_t i = calTok->args.size(); i > 0; i--)
+        instruction(POP, Operand::argRegister(i - 1));
+    
+    instruction(CALL, calTok->name);
+    
+    for(std::size_t i = 0; i < callerArgSize; i++)
+        instruction(POP, Operand::argRegister(i));
 }
 
 void Generator::conArithmeticOperator(Token* token)
