@@ -21,7 +21,7 @@ bool Preprocessor::operator()(int argc, char** argv)
     if(!isDeletedComment())
         return mIsValid;
     
-    Debugger::preprocessor(DATA::PREPROCESSER_DATA);
+    Debugger::preprocessor(DATA::PREPROCESSOR_DATA());
     return mIsValid;
 }
 
@@ -39,7 +39,7 @@ bool Preprocessor::isValidArgument(int argc)
 
 bool Preprocessor::isOpenedFile(char** argv)
 {
-    if(!FileManager::read(argv[1], DATA::PREPROCESSER_DATA))
+    if(!FileManager::read(argv[1], DATA::PREPROCESSOR_DATA()))
     {
         std::cerr << "prep-err: cannot open file "
                   << "( " << argv[1] << " )" << std::endl;
@@ -55,28 +55,28 @@ bool Preprocessor::isDeletedComment()
     std::size_t endPos   = std::string::npos;
 
     // // コメントを 置換
-    while((beginPos = DATA::PREPROCESSER_DATA.find("//")) != std::string::npos)
+    while((beginPos = DATA::PREPROCESSOR_DATA().find("//")) != std::string::npos)
     {
-        endPos = DATA::PREPROCESSER_DATA.find("\n", beginPos);
+        endPos = DATA::PREPROCESSOR_DATA().find("\n", beginPos);
 
         size_t count
             = (endPos != std::string::npos)
-                ? (endPos - beginPos) : (DATA::PREPROCESSER_DATA.size() - 1);
-        DATA::PREPROCESSER_DATA.replace(beginPos,
-                                        count,
-                                        "");
+                ? (endPos - beginPos) : (DATA::PREPROCESSOR_DATA().size() - 1);
+        DATA::PREPROCESSOR_DATA().replace(beginPos,
+                                          count,
+                                          "");
     }
 
     // /* *** */ コメントの置換
-    while((beginPos = DATA::PREPROCESSER_DATA.find("/*")) != std::string::npos)
+    while((beginPos = DATA::PREPROCESSOR_DATA().find("/*")) != std::string::npos)
     {
-        endPos = DATA::PREPROCESSER_DATA.find("*/", beginPos + 2);
+        endPos = DATA::PREPROCESSOR_DATA().find("*/", beginPos + 2);
 
         if(endPos != std::string::npos)
         {
-            DATA::PREPROCESSER_DATA.replace(beginPos,
-                                            endPos + 2 - beginPos,
-                                            " ");
+            DATA::PREPROCESSOR_DATA().replace(beginPos,
+                                              endPos + 2 - beginPos,
+                                              " ");
         }
         else
         {

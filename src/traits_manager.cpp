@@ -49,7 +49,8 @@ bool TraitsManager::addFunctionTrait(Token* token)
 
     mFunctionTraits.emplace_back(FunctionTrait{funTok->type,
                                                funTok->name,
-                                               funTok->argsType});
+                                               funTok->argsType,
+                                               true});
     return true;
 }
 

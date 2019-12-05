@@ -18,6 +18,7 @@ private:
         Token::EType type;
         std::string name;
         std::vector<Token::EType> argsType;
+        bool isDefined;
     };
     struct VariableTrait
     {

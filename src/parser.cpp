@@ -21,13 +21,13 @@ bool Parser::operator()()
 {
     parse();
 
-    Debugger::parser(DATA::PARSER_DATA);
+    Debugger::parser(DATA::PARSER_DATA());
     return mIsValid;
 }
 
 void Parser::parse()
 {
-    DATA::PARSER_DATA = unit();
+    DATA::PARSER_DATA() = unit();
 }
 
 Token* Parser::unit()
@@ -35,7 +35,7 @@ Token* Parser::unit()
     ParentToken* parTok
         = new ParentToken();
 
-    while(mIndex < DATA::TOKENIZER_DATA.size() && mIsValid)
+    while(mIndex < DATA::TOKENIZER_DATA().size() && mIsValid)
           parTok->children.push_back(function());
 
     return parTok;
@@ -45,17 +45,17 @@ Token* Parser::function()
 {
     Token* token = nullptr;
 
-    if(DATA::TOKENIZER_DATA.at(mIndex)->isDeclaration())
+    if(DATA::TOKENIZER_DATA().at(mIndex)->isDeclaration())
     {
         Token::EType type
-            = Token::TYPE_DEC_MAP.at(DATA::TOKENIZER_DATA.at(mIndex)->kind);
+            = Token::TYPE_DEC_MAP.at(DATA::TOKENIZER_DATA().at(mIndex)->kind);
 
         mIndex++;
         if(!isErrored(Token::VARIABLE))
             return token;
 
         VariableToken* varTok
-            = Token::cast<VariableToken*>(DATA::TOKENIZER_DATA.at(mIndex - 1));
+            = Token::cast<VariableToken*>(DATA::TOKENIZER_DATA().at(mIndex - 1));
         FunctionToken* funTok
             = new FunctionToken(varTok->name, type);
         std::vector<Token::EType> argsType;
@@ -110,10 +110,10 @@ Token* Parser::statement()
     Token* token = nullptr;
 
     // return
-    if(DATA::TOKENIZER_DATA.at(mIndex)->isReturn())
+    if(DATA::TOKENIZER_DATA().at(mIndex)->isReturn())
     {
         ReturnToken* retTok
-            = Token::cast<ReturnToken*>(DATA::TOKENIZER_DATA.at(mIndex++));
+            = Token::cast<ReturnToken*>(DATA::TOKENIZER_DATA().at(mIndex++));
 
         retTok->expr = expression();
         token = retTok;
@@ -131,11 +131,11 @@ Token* Parser::declaration()
 {
     Token* token = nullptr;
 
-    if(DATA::TOKENIZER_DATA.at(mIndex)->isDeclaration())
+    if(DATA::TOKENIZER_DATA().at(mIndex)->isDeclaration())
     {
         ParentToken* parTok = new ParentToken();
         Token::EType type
-            = Token::TYPE_DEC_MAP.at(DATA::TOKENIZER_DATA.at(mIndex++)->kind);
+            = Token::TYPE_DEC_MAP.at(DATA::TOKENIZER_DATA().at(mIndex++)->kind);
 
         while(1)
         {
@@ -143,7 +143,7 @@ Token* Parser::declaration()
                 break;
             
             VariableToken* varTok
-                = Token::cast<VariableToken*>(DATA::TOKENIZER_DATA.at(--mIndex));
+                = Token::cast<VariableToken*>(DATA::TOKENIZER_DATA().at(--mIndex));
             varTok->type = type;
 
             mTraitsManager->addVariableTrait(varTok);
@@ -187,7 +187,7 @@ Token* Parser::assignment()
             error("invalid lvalue in assignment expression.");
         
         OperatorToken* opeTok
-            = Token::cast<OperatorToken*>(DATA::TOKENIZER_DATA.at(mIndex++));
+            = Token::cast<OperatorToken*>(DATA::TOKENIZER_DATA().at(mIndex++));
         
         opeTok->lhs = token;
         opeTok->rhs = assignment();
@@ -208,7 +208,7 @@ Token* Parser::equality()
            isValid(Token::CMP_NOT_EQUAL))
         {
             OperatorToken* opeTok
-                = Token::cast<OperatorToken*>(DATA::TOKENIZER_DATA.at(mIndex++));
+                = Token::cast<OperatorToken*>(DATA::TOKENIZER_DATA().at(mIndex++));
             
             opeTok->lhs = comparison();
             opeTok->rhs = comparison();
@@ -234,7 +234,7 @@ Token* Parser::comparison()
            isValid(Token::CMP_GREATER_EQUAL))
         {
             OperatorToken* opeTok
-                = Token::cast<OperatorToken*>(DATA::TOKENIZER_DATA.at(mIndex++));
+                = Token::cast<OperatorToken*>(DATA::TOKENIZER_DATA().at(mIndex++));
             
             opeTok->lhs = token;
             opeTok->rhs = addition();
@@ -258,7 +258,7 @@ Token* Parser::addition()
            isValid(Token::MINUS))
         {
             OperatorToken* opeTok
-                = Token::cast<OperatorToken*>(DATA::TOKENIZER_DATA.at(mIndex++));
+                = Token::cast<OperatorToken*>(DATA::TOKENIZER_DATA().at(mIndex++));
 
             opeTok->lhs = token;
             opeTok->rhs = multiplication();
@@ -283,7 +283,7 @@ Token* Parser::multiplication()
            isValid(Token::PERCENT))
         {
             OperatorToken* opeTok
-                = Token::cast<OperatorToken*>(DATA::TOKENIZER_DATA.at(mIndex++));
+                = Token::cast<OperatorToken*>(DATA::TOKENIZER_DATA().at(mIndex++));
             
             opeTok->lhs = token;
             opeTok->rhs = unary();
@@ -305,7 +305,7 @@ Token* Parser::unary()
        isValid(Token::MINUS))
     {
         OperatorToken* opeTok
-            = Token::cast<OperatorToken*>(DATA::TOKENIZER_DATA.at(mIndex++));
+            = Token::cast<OperatorToken*>(DATA::TOKENIZER_DATA().at(mIndex++));
 
         opeTok->lhs = new IntegralToken(0);
         opeTok->rhs = primary();
@@ -327,13 +327,13 @@ Token* Parser::primary()
     // 変数, 関数
     if(isValid(Token::VARIABLE))
     {
-        token = DATA::TOKENIZER_DATA.at(mIndex++);
+        token = DATA::TOKENIZER_DATA().at(mIndex++);
         mTraitsManager->setVariableTrait(token);
     }
     // 整数値
     else if(isValid(Token::INTEGRAL))
     {
-        token = DATA::TOKENIZER_DATA.at(mIndex++);
+        token = DATA::TOKENIZER_DATA().at(mIndex++);
     }
     // ()
     else if(isConsumed(Token::OPEN_BRACKET))
@@ -354,10 +354,10 @@ Token* Parser::primary()
 
 bool Parser::isValid(Token::EKind kind) const
 {
-    if(mIndex >= DATA::TOKENIZER_DATA.size())
+    if(mIndex >= DATA::TOKENIZER_DATA().size())
         return false;
 
-    if(kind == DATA::TOKENIZER_DATA.at(mIndex)->kind)
+    if(kind == DATA::TOKENIZER_DATA().at(mIndex)->kind)
         return true;
     else
         return false;
@@ -386,7 +386,7 @@ bool Parser::error(Token::EKind kind)
 {
     std::cerr << "pars-err: invalid token "
               << "( ideal: " << Token::KIND_NAME_MAP.at(kind)
-              << ", fact: " << Token::KIND_NAME_MAP.at(DATA::TOKENIZER_DATA.at(mIndex)->kind)
+              << ", fact: " << Token::KIND_NAME_MAP.at(DATA::TOKENIZER_DATA().at(mIndex)->kind)
               << " )." << std::endl;
 
     mIsValid = false;
@@ -412,10 +412,10 @@ bool Parser::setArgsType(std::vector<Token::EType>& argsType,
     
     while(1)
     {
-        if(!DATA::TOKENIZER_DATA.at(mIndex)->isDeclaration())
+        if(!DATA::TOKENIZER_DATA().at(mIndex)->isDeclaration())
             return isErrored(Token::DEC_INT);
 
-        argsType.push_back(Token::TYPE_DEC_MAP.at(DATA::TOKENIZER_DATA.at(mIndex)->kind));
+        argsType.push_back(Token::TYPE_DEC_MAP.at(DATA::TOKENIZER_DATA().at(mIndex)->kind));
 
         if(isPrototype)
         {
@@ -428,7 +428,7 @@ bool Parser::setArgsType(std::vector<Token::EType>& argsType,
                 return false;
             
             VariableToken* varTok
-                = Token::cast<VariableToken*>(DATA::TOKENIZER_DATA.at(mIndex - 1));
+                = Token::cast<VariableToken*>(DATA::TOKENIZER_DATA().at(mIndex - 1));
             varTok->type = argsType.back();
             mTraitsManager->addVariableTrait(varTok, false);
         }

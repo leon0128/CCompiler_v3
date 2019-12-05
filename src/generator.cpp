@@ -25,17 +25,17 @@ bool Generator::operator()()
 {
     generate();
 
-    Debugger::generator(DATA::GENERATOR_DATA);
+    Debugger::generator(DATA::GENERATOR_DATA());
     return mIsValid;
 }
 
 void Generator::generate()
 {
-    DATA::GENERATOR_DATA << ".intel_syntax noprefix\n"
+    DATA::GENERATOR_DATA() << ".intel_syntax noprefix\n"
                          << ".section .text\n"
                          << ".global main\n\n";
 
-    consume(DATA::PARSER_DATA);
+    consume(DATA::PARSER_DATA());
 }
 
 void Generator::consume(Token* token)
@@ -77,7 +77,7 @@ void Generator::conFunction(Token* token)
     FunctionToken* funTok
         = Token::cast<FunctionToken*>(token);
 
-    DATA::GENERATOR_DATA << funTok->name << ":" << std::endl;
+    DATA::GENERATOR_DATA() << funTok->name << ":" << std::endl;
     instruction(PUSH, Operand::RBP);
     instruction(MOV, Operand::RBP, Operand::RSP);
     instruction(SUB, Operand::RSP, funTok->offset);
@@ -87,7 +87,7 @@ void Generator::conFunction(Token* token)
     instruction(MOV, Operand::RSP, Operand::RBP);
     instruction(POP, Operand::RBP);
     instruction(RET);
-    DATA::GENERATOR_DATA << std::endl;
+    DATA::GENERATOR_DATA() << std::endl;
 }
 
 void Generator::conArithmeticOperator(Token* token)
@@ -213,18 +213,18 @@ void Generator::instruction(EInstruction inst,
     auto pair = INSTRUCTION_MAP.at(inst);
     Operand opes[] = {ope1, ope2, ope3, ope4};
 
-    DATA::GENERATOR_DATA << "    "
+    DATA::GENERATOR_DATA() << "    "
               << pair.first;
 
     for(std::size_t i = 0; i < pair.second; i++)
     {
         if(i != pair.second - 1)
-            DATA::GENERATOR_DATA << opes[i]() << ", ";
+            DATA::GENERATOR_DATA() << opes[i]() << ", ";
         else
-            DATA::GENERATOR_DATA << opes[i]();
+            DATA::GENERATOR_DATA() << opes[i]();
     }
 
-    DATA::GENERATOR_DATA << "\n";
+    DATA::GENERATOR_DATA() << "\n";
 }
 
 bool Generator::error(Token* token)

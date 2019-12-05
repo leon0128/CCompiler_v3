@@ -21,7 +21,7 @@ bool Tokenizer::operator()()
 {
     tokenize();
     
-    Debugger::tokenizer(DATA::TOKENIZER_DATA);
+    Debugger::tokenizer(DATA::TOKENIZER_DATA());
 
     return mIsValid;
 }
@@ -32,23 +32,23 @@ void Tokenizer::tokenize()
     long integral = 0;
     Token::EKind kind = Token::INTEGRAL;
 
-    while(mIndex < DATA::PREPROCESSER_DATA.size() && mIsValid)
+    while(mIndex < DATA::PREPROCESSOR_DATA().size() && mIsValid)
     {
         if(isString(name, kind))
         {
             if(kind == Token::VARIABLE)
-                DATA::TOKENIZER_DATA.emplace_back(new VariableToken(name));
+                DATA::TOKENIZER_DATA().emplace_back(new VariableToken(name));
             else if(kind == Token::RETURN)
-                DATA::TOKENIZER_DATA.emplace_back(new ReturnToken());
+                DATA::TOKENIZER_DATA().emplace_back(new ReturnToken());
             else
-                DATA::TOKENIZER_DATA.emplace_back(new Token(kind));
+                DATA::TOKENIZER_DATA().emplace_back(new Token(kind));
         }
         else if(isIntegral(integral))
-            DATA::TOKENIZER_DATA.emplace_back(new IntegralToken(integral));
+            DATA::TOKENIZER_DATA().emplace_back(new IntegralToken(integral));
         else if(isOperator(kind))
-            DATA::TOKENIZER_DATA.emplace_back(new OperatorToken(kind));
+            DATA::TOKENIZER_DATA().emplace_back(new OperatorToken(kind));
         else if(isOther(kind))
-            DATA::TOKENIZER_DATA.emplace_back(new Token(kind));
+            DATA::TOKENIZER_DATA().emplace_back(new Token(kind));
         else if(isIgnore())
             ;
         else
@@ -67,7 +67,7 @@ bool Tokenizer::isString(std::string& name, Token::EKind& kind)
     {
         if(isAlphabet() ||
            isNumber())
-            name.push_back(DATA::PREPROCESSER_DATA.at(mIndex++));
+            name.push_back(DATA::PREPROCESSOR_DATA().at(mIndex++));
         else
             break;
     }
@@ -94,7 +94,7 @@ bool Tokenizer::isIntegral(long& value)
     {
         if(isNumber())
             value = value * 10 +
-                    DATA::PREPROCESSER_DATA.at(mIndex++) - '0';
+                 DATA::PREPROCESSOR_DATA().at(mIndex++) - '0';
         else
             break;
     }
@@ -191,33 +191,33 @@ bool Tokenizer::isIgnore()
 
 bool Tokenizer::isValid(char c) const
 {
-    if(mIndex >= DATA::PREPROCESSER_DATA.size())
+    if(mIndex >= DATA::PREPROCESSOR_DATA().size())
         return false;
     
-    return (c == DATA::PREPROCESSER_DATA.at(mIndex));
+    return (c == DATA::PREPROCESSOR_DATA().at(mIndex));
 }
 
 bool Tokenizer::isNumber() const
 {
-    if(mIndex >= DATA::PREPROCESSER_DATA.size())
+    if(mIndex >= DATA::PREPROCESSOR_DATA().size())
         return false;
 
     bool isValid
-        = (DATA::PREPROCESSER_DATA.at(mIndex) >= '0' &&
-           DATA::PREPROCESSER_DATA.at(mIndex) <= '9');
+        =  (DATA::PREPROCESSOR_DATA().at(mIndex) >= '0' &&
+            DATA::PREPROCESSOR_DATA().at(mIndex) <= '9');
 
     return isValid;
 }
 
 bool Tokenizer::isAlphabet() const
 {
-    if(mIndex >= DATA::PREPROCESSER_DATA.size())
+    if(mIndex >= DATA::PREPROCESSOR_DATA().size())
         return false;
     
     bool isValid
-        = ((DATA::PREPROCESSER_DATA.at(mIndex) >= 'a' && DATA::PREPROCESSER_DATA.at(mIndex) <= 'z') ||
-           (DATA::PREPROCESSER_DATA.at(mIndex) >= 'A' && DATA::PREPROCESSER_DATA.at(mIndex) <= 'Z') ||
-           DATA::PREPROCESSER_DATA.at(mIndex) == '_');
+        = (( DATA::PREPROCESSOR_DATA().at(mIndex) >= 'a' && DATA::PREPROCESSOR_DATA().at(mIndex) <= 'z') ||
+           (DATA::PREPROCESSOR_DATA().at(mIndex) >= 'A' && DATA::PREPROCESSOR_DATA().at(mIndex) <= 'Z') ||
+            DATA::PREPROCESSOR_DATA().at(mIndex) == '_');
     
     return isValid;
 }
@@ -225,7 +225,7 @@ bool Tokenizer::isAlphabet() const
 bool Tokenizer::error()
 {
     std::cerr << "toke-err: unsupported characters "
-              << "( " << DATA::PREPROCESSER_DATA.at(mIndex) << " )." << std::endl;
+              << "( " << DATA::PREPROCESSOR_DATA().at(mIndex) << " )." << std::endl;
     
     mIsValid = false;
     return mIsValid;

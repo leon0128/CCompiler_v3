@@ -45,7 +45,7 @@ bool Compiler::operator()(int argc, char** argv)
         return error("failed to generate.");
 
     FileManager::write(RESULT_FILENAME,
-                       DATA::GENERATOR_DATA);
+                       DATA::GENERATOR_DATA());
 
     return mIsValid;
 }
