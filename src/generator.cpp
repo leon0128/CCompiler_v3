@@ -32,8 +32,8 @@ bool Generator::operator()()
 void Generator::generate()
 {
     DATA::GENERATOR_DATA() << ".intel_syntax noprefix\n"
-                         << ".section .text\n"
-                         << ".global main\n\n";
+                           << ".section .text\n"
+                           << ".global main\n\n";
 
     consume(DATA::PARSER_DATA());
 }
