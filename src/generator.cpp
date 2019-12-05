@@ -38,10 +38,11 @@ void Generator::generate()
     for(std::size_t i = 0; i < DATA::FUNCTION_TRAITS().size(); i++)
     {
         if(i != DATA::FUNCTION_TRAITS().size() - 1)
-            DATA::GENERATOR_DATA() << DATA::FUNCTION_TRAITS().at(i) << ", ";
+            DATA::GENERATOR_DATA() << DATA::FUNCTION_TRAITS().at(i).name << ", ";
         else
-            DATA::GENERATOR_DATA() << DATA::FUNCTION_TRAITS.at(i) << std::endl;
+            DATA::GENERATOR_DATA() << DATA::FUNCTION_TRAITS().at(i).name << std::endl;
     }
+    DATA::GENERATOR_DATA() << std::endl;
 
     consume(DATA::PARSER_DATA());
 }

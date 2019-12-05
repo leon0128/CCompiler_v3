@@ -55,7 +55,6 @@ public:
     Operand(ERegister reg);
     Operand(std::string& str);
     Operand(class Token* token);
-    Operand(const Operand& other);
 
     ~Operand();
 

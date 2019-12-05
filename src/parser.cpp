@@ -327,7 +327,12 @@ Token* Parser::primary()
     // 変数, 関数
     if(isValid(Token::VARIABLE))
     {
-        token = DATA::TOKENIZER_DATA().at(mIndex++);
+        VariableToken* varTok
+            = DATA::TOKENIZER_DATA().at(mIndex++);
+        
+        if(isConsumed(Token::OPEN_BRACKET))
+            
+
         mTraitsManager->setVariableTrait(token);
     }
     // 整数値
@@ -417,6 +422,7 @@ bool Parser::setArgsType(std::vector<Token::EType>& argsType,
 
         argsType.push_back(Token::TYPE_DEC_MAP.at(DATA::TOKENIZER_DATA().at(mIndex)->kind));
 
+        long argIndex = 0;
         if(isPrototype)
         {
 
@@ -430,7 +436,7 @@ bool Parser::setArgsType(std::vector<Token::EType>& argsType,
             VariableToken* varTok
                 = Token::cast<VariableToken*>(DATA::TOKENIZER_DATA().at(mIndex - 1));
             varTok->type = argsType.back();
-            mTraitsManager->addVariableTrait(varTok, false);
+            mTraitsManager->addVariableTrait(varTok, false, argIndex++);
         }
 
         if(isConsumed(Token::COMMA))

@@ -64,6 +64,9 @@ bool TraitsManager::addFunctionArgsTrait(Token* token)
         if(e.name == funTok->name)
         {
             e.argsType = funTok->argsType;
+            DATA::FUNCTION_TRAITS()
+                .emplace_back(DATA::FunctionTrait{funTok->name,
+                                                  funTok->argsType});
             return true;
         }
     }
@@ -115,8 +118,9 @@ bool TraitsManager::addVariableTrait(Token* token, bool isLocal, long argIndex)
                                                 varTok->type,
                                                 varTok->name,
                                                 argIndex,
-                                                isLocal});
+                                                !isLocal});
     }
+    varTok->isArg = !isLocal;
     return setVariableTrait(token);
 }
 

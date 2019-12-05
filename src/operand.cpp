@@ -4,7 +4,7 @@
 const std::unordered_map<long, const char*> Operand::SPECIFICATION_SIZE_MAP
     = {{1, "BYTE PTR"}, {2, "WORD PTR"}, {4, "DWORD PTR"}, {8, "QWORD PTR"}};
 
-const std::array<Operand::ERegister, 7> ARG_REGISTER_ARRAY
+const std::array<Operand::ERegister, 7> Operand::ARG_REGISTER_ARRAY
     = {RDI, RSI, RDX, RCX, R10, R8, R9};
 
 const std::unordered_map<Operand::ERegister, const char*> Operand::REGISTER_NAME_MAP
@@ -42,6 +42,9 @@ Operand::ERegister Operand::shrinkAccum(Token* token)
 {
     VariableToken* varTok
         = Token::cast<VariableToken*>(token);
+
+    if(varTok->isArg)
+        return RAX;
     
     if(Token::TYPE_SIZE_MAP.at(varTok->type) == 8)
         return RAX;
@@ -70,7 +73,7 @@ Operand::Operand(ERegister reg):
 {
 }
 
-Operand::Operand(std::string& str)
+Operand::Operand(std::string& str):
     mString(str)
 {
 }
@@ -91,11 +94,8 @@ Operand::Operand(Token* token):
         mString = stream.str();
     }
     else
-        mString = ARG_REGISTER_ARRAY.at(varTok->offset);
+        mString = REGISTER_NAME_MAP.at(ARG_REGISTER_ARRAY.at(varTok->offset));
 }
-
-Operand::Operand(const Operand& other):
-    Operand(other());
 
 Operand::~Operand()
 {
