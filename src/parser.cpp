@@ -328,12 +328,31 @@ Token* Parser::primary()
     if(isValid(Token::VARIABLE))
     {
         VariableToken* varTok
-            = DATA::TOKENIZER_DATA().at(mIndex++);
-        
-        if(isConsumed(Token::OPEN_BRACKET))
-            
+            = Token::cast<VariableToken*>(DATA::TOKENIZER_DATA().at(mIndex++));
 
-        mTraitsManager->setVariableTrait(token);
+        if(isConsumed(Token::OPEN_BRACKET))
+        {
+            CallToken* calTok
+                = new CallToken(varTok->name);
+            while(1)
+            {
+                calTok->args.push_back(expression());
+
+                if(isConsumed(Token::COMMA))
+                    continue;
+                else
+                    break;
+            }
+
+            isErrored(Token::CLOSE_BRACKET);
+            mTraitsManager->setFunctionTrait(calTok);
+            token = calTok;
+        }
+        else
+        {
+            mTraitsManager->setVariableTrait(varTok);
+            token = varTok;
+        }
     }
     // 整数値
     else if(isValid(Token::INTEGRAL))

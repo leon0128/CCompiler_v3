@@ -5,7 +5,7 @@ std::vector<Token*> Token::TOKENS
 
 const std::unordered_map<Token::EKind, const char*> Token::KIND_NAME_MAP
     = {{PARENT, "PARENT"},
-       {FUNCTION, "FUNCTION"}, {VARIABLE, "VARIABLE"},
+       {FUNCTION, "FUNCTION"}, {CALL, "CALL"}, {VARIABLE, "VARIABLE"},
        {DEC_LONG, "DEC_LONG"}, {DEC_INT, "DEC_INT"}, {DEC_SHORT, "DEC_SHORT"}, {DEC_CHAR, "DEC_CHAR"},
        {INTEGRAL, "INTEGRAL"},
        {EQUAL, "EQUAL"}, {NOT, "NOT"},

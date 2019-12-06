@@ -8,6 +8,7 @@
 // 各トークンのメンバを表示するかどうか
 #define DEBUG_PARENT   1
 #define DEBUG_FUNCTION 1
+#define DEBUG_CALL     1
 #define DEBUG_OPERATOR 1
 #define DEBUG_RETURN   1
 #define DEBUG_VARIABLE 1
@@ -29,6 +30,8 @@ private:
                           std::string disc = std::string());
     std::string conFunction(class Token* token,
                             std::string disc = std::string());
+    std::string conCall(class Token* token,
+                        std::string disc = std::string());
     std::string conOperator(class Token* token,
                             std::string disc = std::string());
     std::string conReturn(class Token* token,

@@ -29,6 +29,8 @@ std::string ParserDebugger::consume(Token* token, std::string disc)
             data = conParent(token, disc);
         else if(token->isFunction())
             data = conFunction(token, disc);
+        else if(token->isCall())
+            data = conCall(token, disc);
         else if(token->isOperator())
             data = conOperator(token, disc);
         else if(token->isReturn())
@@ -103,6 +105,23 @@ std::string ParserDebugger::conFunction(Token* token, std::string disc)
                    << Token::TYPE_NAME_MAP.at(funTok->argsType.at(i))
                    << " (arg " << i << ")" << std::endl;
         }
+        
+        stream << createIndent(mIsValidIndents.size())
+               << " |--[-] (ARGS [not token])" << std::endl;
+        mIsValidIndents.push_back(true);
+        for(std::size_t i = 0; i < funTok->argsType.size(); i++)
+        {
+            stream << createIndent(mIsValidIndents.size());
+            if(i != funTok->argsType.size() - 1)
+                stream << " |----- ";
+            else
+                stream << " `----- ";
+            
+            stream << Token::TYPE_NAME_MAP.at(funTok->argsType.at(i))
+                   << " (arg " << i << ")" << std::endl;
+        }
+        mIsValidIndents.pop_back();
+
         stream << createIndent(mIsValidIndents.size())
                << " |----- "
                << funTok->offset << " (offset)"
@@ -112,6 +131,39 @@ std::string ParserDebugger::conFunction(Token* token, std::string disc)
         stream << createIndent(mIsValidIndents.size() - 1)
                << " `--"
                << consume(funTok->proc, "proc");
+        mIsValidIndents.pop_back();
+    #endif
+
+    std::string data(stream.str());
+    return data;
+}
+
+std::string ParserDebugger::conCall(Token* token, std::string disc)
+{
+    std::stringstream stream;
+    addNodeHeader(token, stream, disc);
+
+    #if DEBUG_CALL
+        CallToken* calTok
+            = Token::cast<CallToken*>(token);
+
+        stream << createIndent(mIsValidIndents.size())
+               << " |----- "
+               << Token::TYPE_NAME_MAP.at(calTok->type)
+               << " (type)" << std::endl
+               << createIndent(mIsValidIndents.size())
+               << " |----- "
+               << "\"" << calTok->name << "\""
+               << " (name)" << std::endl;
+        
+        ParentToken* parTok
+            = new ParentToken();
+        parTok->children = calTok->args;
+        
+        mIsValidIndents.push_back(false);
+        stream << createIndent(mIsValidIndents.size() - 1)
+               << " `--"
+               << consume(parTok, "args");
         mIsValidIndents.pop_back();
     #endif
 
@@ -182,8 +234,12 @@ std::string ParserDebugger::conVariable(Token* token, std::string disc)
                << std::endl
                << createIndent(mIsValidIndents.size())
                << " `----- "
-               << varTok->offset << " (offset)"
-               << std::endl;
+               << varTok->offset;
+
+        if(varTok->isArg)
+            stream << " (argIndex)" << std::endl;
+        else
+            stream << " (offset)" << std::endl;
     #endif
 
     std::string data(stream.str());

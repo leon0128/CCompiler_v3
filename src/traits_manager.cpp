@@ -126,7 +126,22 @@ bool TraitsManager::addVariableTrait(Token* token, bool isLocal, long argIndex)
 
 bool TraitsManager::setFunctionTrait(Token* token) const
 {
-    return true;
+    CallToken* calTok
+        = Token::cast<CallToken*>(token);
+
+    for(auto&& e : mFunctionTraits)
+    {
+        if(e.name == calTok->name)
+        {
+            if(e.argsType.size() != calTok->args.size())
+                return error(token, "invalid number of function call arguments");
+        
+            calTok->type = e.type;
+            return true;
+        }
+    }
+
+    return error(token, "undefined function call");
 }
 
 bool TraitsManager::setVariableTrait(Token* token) const
@@ -163,6 +178,12 @@ bool TraitsManager::error(Token* token, const char* message) const
         FunctionToken* funTok
             = Token::cast<FunctionToken*>(token);
         name = funTok->name;
+    }
+    else if(token->isCall())
+    {
+        CallToken* calTok
+            = Token::cast<CallToken*>(token);
+        name = calTok->name;
     }
 
     std::cerr << "trai-err: " << message
