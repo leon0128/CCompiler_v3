@@ -32,8 +32,8 @@ private:
     void incScope(){mScope++;}
     void decScope();
 
-    bool addFunctionTrait(Token* token);     // 関数の名前と戻り値型
-    bool addFunctionArgsTrait(Token* token); // 関数の引数型
+    bool addFunctionTrait(Token* token);  // 関数の名前と戻り値型
+    bool addFunctionArgsTrait(Token* token, bool isPrototype); // 関数の引数型
     bool addVariableTrait(Token* token,
                           bool isLocal = true,
                           long argIndex = 0);

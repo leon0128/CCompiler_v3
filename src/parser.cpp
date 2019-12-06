@@ -28,6 +28,13 @@ bool Parser::operator()()
 void Parser::parse()
 {
     DATA::PARSER_DATA() = unit();
+    
+    for(auto&& e : mTraitsManager->mFunctionTraits)
+    {
+        DATA::FUNCTION_TRAITS()
+            .emplace_back(DATA::FunctionTrait{e.name,
+                                              e.argsType});
+    }
 }
 
 Token* Parser::unit()
@@ -62,9 +69,16 @@ Token* Parser::function()
 
         mTraitsManager->addFunctionTrait(funTok);
         mTraitsManager->incScope();
-        setArgsType(argsType, false);
+        bool isPrototype = false;
+        setArgsType(argsType, isPrototype);
         funTok->argsType = argsType;
-        mTraitsManager->addFunctionArgsTrait(funTok);
+        mTraitsManager->addFunctionArgsTrait(funTok, isPrototype);
+
+        if(isPrototype)
+        {
+            isErrored(Token::END);
+            return nullptr;
+        }
 
         funTok->proc = block();
         funTok->offset = mTraitsManager->mOffsetCount;
@@ -427,36 +441,34 @@ bool Parser::error(const char* message)
 }
 
 bool Parser::setArgsType(std::vector<Token::EType>& argsType,
-                         bool isPrototype)
+                         bool& isPrototype)
 {
     if(!isErrored(Token::OPEN_BRACKET))
         return false;
     if(isConsumed(Token::CLOSE_BRACKET))
+    {
+        isPrototype = false;
         return true;
-    
+    }
+
+    long argIndex = 0;
+    isPrototype = false;
     while(1)
     {
         if(!DATA::TOKENIZER_DATA().at(mIndex)->isDeclaration())
             return isErrored(Token::DEC_INT);
 
-        argsType.push_back(Token::TYPE_DEC_MAP.at(DATA::TOKENIZER_DATA().at(mIndex)->kind));
+        argsType.push_back(Token::TYPE_DEC_MAP.at(DATA::TOKENIZER_DATA().at(mIndex++)->kind));
 
-        long argIndex = 0;
-        if(isPrototype)
+        if(isValid(Token::VARIABLE))
         {
-
-        }
-        else
-        {
-            mIndex++;
-            if(!isErrored(Token::VARIABLE))
-                return false;
-            
             VariableToken* varTok
-                = Token::cast<VariableToken*>(DATA::TOKENIZER_DATA().at(mIndex - 1));
+                = Token::cast<VariableToken*>(DATA::TOKENIZER_DATA().at(mIndex++));
             varTok->type = argsType.back();
             mTraitsManager->addVariableTrait(varTok, false, argIndex++);
         }
+        else
+            isPrototype = true;
 
         if(isConsumed(Token::COMMA))
             continue;

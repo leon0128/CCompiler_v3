@@ -38,9 +38,8 @@ private:
     bool error(const char* message);
 
     // 関数の引数の型を格納する
-    // 第二引数は プロトタイプ宣言か
     bool setArgsType(std::vector<Token::EType>& argsType,
-                     bool isPrototype = false);
+                     bool& isPrototype);
 
     std::size_t mIndex;
     class TraitsManager* mTraitsManager;

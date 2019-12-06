@@ -36,8 +36,10 @@ bool TraitsManager::addFunctionTrait(Token* token)
         iter != mFunctionTraits.end();
         iter++)
     {
-        if(iter->name == funTok->name)
+        if(iter->name == funTok->name && iter->isDefined)
             return error(token, "function overloading.");
+        else if(iter->name == funTok->name)
+            return true;
     }
     for(auto iter = mVariableTraits.begin();
         iter != mVariableTraits.end();
@@ -50,11 +52,11 @@ bool TraitsManager::addFunctionTrait(Token* token)
     mFunctionTraits.emplace_back(FunctionTrait{funTok->type,
                                                funTok->name,
                                                funTok->argsType,
-                                               true});
+                                               false});
     return true;
 }
 
-bool TraitsManager::addFunctionArgsTrait(Token* token)
+bool TraitsManager::addFunctionArgsTrait(Token* token, bool isPrototype)
 {
     FunctionToken* funTok
         = Token::cast<FunctionToken*>(token);
@@ -63,10 +65,8 @@ bool TraitsManager::addFunctionArgsTrait(Token* token)
     {
         if(e.name == funTok->name)
         {
+            e.isDefined = !isPrototype;
             e.argsType = funTok->argsType;
-            DATA::FUNCTION_TRAITS()
-                .emplace_back(DATA::FunctionTrait{funTok->name,
-                                                  funTok->argsType});
             return true;
         }
     }

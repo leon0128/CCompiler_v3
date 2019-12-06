@@ -52,6 +52,9 @@ void Generator::consume(Token* token)
     if(!mIsValid)
         return;
 
+    if(!token)
+        return;
+
     if(token->isParent())
         conParent(token);
     else if(token->isFunction())
