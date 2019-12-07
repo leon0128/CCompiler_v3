@@ -36,6 +36,7 @@ private:
     void conFunction(class Token* token);
     void conCall(class Token* token);
     void conWhile(class Token* token);
+    void conFor(class Token* token);
     void conArithmeticOperator(class Token* token);
     void conAssignmentOperator(class Token* token);
     void conCompareOperator(class Token* token);

@@ -63,6 +63,8 @@ void Generator::consume(Token* token)
         conCall(token);
     else if(token->isWhile())
         conWhile(token);
+    else if(token->isFor())
+        conFor(token);
     else if(token->isArithmeticOperator())
         conArithmeticOperator(token);
     else if(token->isAssignmentOperator())
@@ -154,6 +156,29 @@ void Generator::conWhile(Token* token)
     label.back() = 'C';
     DATA::GENERATOR_DATA() << label << ":" << std::endl;
     consume(whiTok->cmp);
+    instruction(CMP, Operand::RAX, 0L);
+    label.back() = 'P';
+    instruction(JNE, label);
+}
+
+void Generator::conFor(Token* token)
+{
+    ForToken* forTok
+        = Token::cast<ForToken*>(token);
+
+    std::string label(".LF");
+    label += std::to_string(forTok->label);
+    label.push_back('C');
+
+    consume(forTok->init);
+    instruction(JMP, label);
+    label.back() = 'P';
+    DATA::GENERATOR_DATA() << label << ":" << std::endl;
+    consume(forTok->proc);
+    consume(forTok->rate);
+    label.back() = 'C';
+    DATA::GENERATOR_DATA() << label << ":" << std::endl;
+    consume(forTok->cmp);
     instruction(CMP, Operand::RAX, 0L);
     label.back() = 'P';
     instruction(JNE, label);

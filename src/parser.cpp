@@ -145,6 +145,38 @@ Token* Parser::statement()
         token = whiTok;
         return token;
     }
+    // for
+    else if(DATA::TOKENIZER_DATA().at(mIndex)->isFor())
+    {
+        ForToken* forTok
+            = Token::cast<ForToken*>(DATA::TOKENIZER_DATA().at(mIndex++));
+
+        if(!isErrored(Token::OPEN_BRACKET))
+            return nullptr;
+
+        mTraitsManager->incScope();
+
+        forTok->init = declaration();
+        if(!isErrored(Token::END))
+            return nullptr;
+        forTok->cmp = expression();
+        if(!isErrored(Token::END))
+            return nullptr;
+        forTok->rate = expression();
+        
+        if(!isErrored(Token::CLOSE_BRACKET))
+            return nullptr;
+        
+        if(isValid(Token::OPEN_BLOCK))
+            forTok->proc = block();
+        else
+            forTok->proc = statement();
+        
+        mTraitsManager->decScope();
+
+        token = forTok;
+        return token;
+    }
     // return
     else if(DATA::TOKENIZER_DATA().at(mIndex)->isReturn())
     {

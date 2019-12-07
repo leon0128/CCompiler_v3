@@ -28,6 +28,7 @@ const std::unordered_map<Token::EKind, Token::EType> Token::TYPE_DEC_MAP
     = {{DEC_LONG, LONG}, {DEC_INT, INT}, {DEC_SHORT, SHORT}, {DEC_CHAR, CHAR}};
 
 long WhileToken::LABEL_INDEX = 0;
+long ForToken::LABEL_INDEX   = 0;
 
 Token::Token(EKind inKind):
     kind(inKind)

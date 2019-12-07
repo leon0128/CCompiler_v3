@@ -5,7 +5,7 @@
 
 const std::unordered_map<std::string, Token::EKind> Tokenizer::RESERVED_WORD_MAP
     = {{"long", Token::DEC_LONG}, {"int", Token::DEC_INT}, {"short", Token::DEC_SHORT}, {"char", Token::DEC_CHAR},
-       {"return", Token::RETURN}, {"while", Token::WHILE}};
+       {"return", Token::RETURN}, {"while", Token::WHILE}, {"for", Token::FOR}};
 
 Tokenizer::Tokenizer():
     mIndex(0),
@@ -42,6 +42,8 @@ void Tokenizer::tokenize()
                 DATA::TOKENIZER_DATA().emplace_back(new ReturnToken());
             else if(kind == Token::WHILE)
                 DATA::TOKENIZER_DATA().emplace_back(new WhileToken());
+            else if(kind == Token::FOR)
+                DATA::TOKENIZER_DATA().emplace_back(new ForToken());
             else
                 DATA::TOKENIZER_DATA().emplace_back(new Token(kind));
         }

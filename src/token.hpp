@@ -149,6 +149,27 @@ public:
     long label;
 };
 
+class ForToken : public Token
+{
+private:
+    static long LABEL_INDEX;
+
+public:
+    ForToken():
+        Token(FOR),
+        init(nullptr),
+        cmp(nullptr),
+        rate(nullptr),
+        proc(nullptr),
+        label(LABEL_INDEX++){}
+
+    Token* init;
+    Token* cmp;
+    Token* rate;
+    Token* proc;
+    long label;
+};
+
 class OperatorToken : public Token
 {
 public:

@@ -33,6 +33,8 @@ std::string ParserDebugger::consume(Token* token, std::string disc)
             data = conCall(token, disc);
         else if(token->isWhile())
             data = conWhile(token, disc);
+        else if(token->isFor())
+            data = conFor(token, disc);
         else if(token->isOperator())
             data = conOperator(token, disc);
         else if(token->isReturn())
@@ -197,6 +199,41 @@ std::string ParserDebugger::conWhile(Token* token, std::string disc)
         stream << createIndent(mIsValidIndents.size() - 1)
                << " `--"
                << consume(whiTok->proc, "proc");
+        mIsValidIndents.pop_back();
+    #endif
+
+    std::string data(stream.str());
+    return data;
+}
+
+std::string ParserDebugger::conFor(Token* token, std::string disc)
+{
+    std::stringstream  stream;
+    addNodeHeader(token, stream, disc);
+
+    #if DEBUG_FOR
+        ForToken* forTok
+            = Token::cast<ForToken*>(token);
+
+        stream << createIndent(mIsValidIndents.size())
+               << " |----- "
+               << forTok->label
+               << " (label)" << std::endl;
+
+        mIsValidIndents.push_back(true);
+        stream << createIndent(mIsValidIndents.size() - 1)
+               << " |--"
+               << consume(forTok->init, "init")
+               << createIndent(mIsValidIndents.size() - 1)
+               << " |--"
+               << consume(forTok->cmp, "cmp")
+               << createIndent(mIsValidIndents.size() - 1)
+               << " |--"
+               << consume(forTok->rate, "rate");
+        mIsValidIndents.back() = false;
+        stream << createIndent(mIsValidIndents.size() - 1)
+               << " `--"
+               << consume(forTok->proc, "proc");
         mIsValidIndents.pop_back();
     #endif
 
