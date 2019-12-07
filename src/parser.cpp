@@ -132,6 +132,8 @@ Token* Parser::statement()
         if(!isErrored(Token::OPEN_BRACKET))
             return nullptr;
         
+        mTraitsManager->incScope();
+
         whiTok->cmp = expression();
         
         if(!isErrored(Token::CLOSE_BRACKET))
@@ -141,6 +143,8 @@ Token* Parser::statement()
             whiTok->proc = block();
         else
             whiTok->proc = statement();
+
+        mTraitsManager->decScope();
 
         token = whiTok;
         return token;
@@ -175,6 +179,65 @@ Token* Parser::statement()
         mTraitsManager->decScope();
 
         token = forTok;
+        return token;
+    }
+    // if
+    else if(DATA::TOKENIZER_DATA().at(mIndex)->isIf())
+    {
+        IfToken* ifTok
+            = Token::cast<IfToken*>(DATA::TOKENIZER_DATA().at(mIndex++));
+        
+        if(!isErrored(Token::OPEN_BRACKET))
+            return nullptr;
+
+        mTraitsManager->incScope();
+
+        Token* cmp = expression();
+        Token* proc  = nullptr;
+        
+        if(!isErrored(Token::CLOSE_BRACKET))
+            return nullptr;
+        if(isValid(Token::OPEN_BLOCK))
+            proc = block();
+        else
+            proc = statement();
+
+        ifTok->children.emplace_back(IfToken::IfChild{cmp, proc});
+
+        while(isConsumed(Token::ELSE))
+        {
+            if(isConsumed(Token::IF))
+            {
+                if(!isErrored(Token::OPEN_BRACKET))
+                    return nullptr;
+                
+                cmp = expression();
+                if(!isErrored(Token::CLOSE_BRACKET))
+                    return nullptr;
+                
+                if(isValid(Token::OPEN_BLOCK))
+                    proc = block();
+                else
+                    proc = statement();
+
+                ifTok->children.emplace_back(IfToken::IfChild{cmp, proc});
+            }
+            else
+            {
+                cmp = nullptr;
+                if(isValid(Token::OPEN_BLOCK))
+                    proc = block();
+                else
+                    proc = statement();
+
+                ifTok->children.emplace_back(IfToken::IfChild{cmp, proc});
+                break;
+            }
+        }
+
+        mTraitsManager->decScope();
+        
+        token = ifTok;
         return token;
     }
     // return

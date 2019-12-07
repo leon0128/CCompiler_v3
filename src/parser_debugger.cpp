@@ -35,6 +35,8 @@ std::string ParserDebugger::consume(Token* token, std::string disc)
             data = conWhile(token, disc);
         else if(token->isFor())
             data = conFor(token, disc);
+        else if(token->isIf())
+            data = conIf(token, disc);
         else if(token->isOperator())
             data = conOperator(token, disc);
         else if(token->isReturn())
@@ -234,6 +236,62 @@ std::string ParserDebugger::conFor(Token* token, std::string disc)
         stream << createIndent(mIsValidIndents.size() - 1)
                << " `--"
                << consume(forTok->proc, "proc");
+        mIsValidIndents.pop_back();
+    #endif
+
+    std::string data(stream.str());
+    return data;
+}
+
+std::string ParserDebugger::conIf(Token* token, std::string disc)
+{
+    std::stringstream stream;
+    addNodeHeader(token, stream, disc);
+
+    #if DEBUG_IF
+        IfToken* ifTok
+            = Token::cast<IfToken*>(token);
+
+        stream << createIndent(mIsValidIndents.size())
+               << " |----- "
+               << ifTok->label
+               << " (label)\n"
+               << createIndent(mIsValidIndents.size())
+               << " `--[-] (CHILDREN [not token])"
+               << std::endl;
+        
+        mIsValidIndents.push_back(false);
+        mIsValidIndents.push_back(true);
+        for(std::size_t i = 0; i < ifTok->children.size(); i++)
+        {            
+            if(i == ifTok->children.size() - 1)
+            {
+                mIsValidIndents.back() = false;
+                stream << createIndent(mIsValidIndents.size() - 1)
+                       << " `--[-] (IF_CHILD [not token])"
+                       << std::endl;
+            }
+            else
+            {
+                stream << createIndent(mIsValidIndents.size() - 1)
+                       << " |--[-] (IF_CHILD [not token])"
+                       << std::endl;
+            }
+            mIsValidIndents.push_back(true);
+            stream << createIndent(mIsValidIndents.size() - 1)
+                   << " |-----"
+                   << i << " (index)" << std::endl;
+            mIsValidIndents.back() = true;
+            stream << createIndent(mIsValidIndents.size() - 1)
+                   << " |--"
+                   << consume(ifTok->children.at(i).cmp, "cmp");
+            mIsValidIndents.back() = false;
+            stream << createIndent(mIsValidIndents.size() - 1)
+                   << " `--"
+                   << consume(ifTok->children.at(i).proc, "proc");
+            mIsValidIndents.pop_back();
+        }
+        mIsValidIndents.pop_back();
         mIsValidIndents.pop_back();
     #endif
 

@@ -11,6 +11,7 @@
 #define DEBUG_CALL     1
 #define DEBUG_WHILE    1
 #define DEBUG_FOR      1
+#define DEBUG_IF       1
 #define DEBUG_OPERATOR 1
 #define DEBUG_RETURN   1
 #define DEBUG_VARIABLE 1
@@ -38,6 +39,8 @@ private:
                          std::string disc = std::string());
     std::string conFor(class Token* token,
                        std::string disc = std::string());
+    std::string conIf(class Token* token,
+                      std::string disc = std::string());
     std::string conOperator(class Token* token,
                             std::string disc = std::string());
     std::string conReturn(class Token* token,

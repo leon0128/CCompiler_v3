@@ -16,8 +16,8 @@ public:
         PARENT, 
         // function, call, variable
         FUNCTION, CALL, VARIABLE,
-        // while, for, if
-        WHILE, FOR, IF,
+        // while, for, if, else
+        WHILE, FOR, IF, ELSE,
         // declaration
         DEC_LONG, DEC_INT, DEC_SHORT, DEC_CHAR,
         // integral
@@ -167,6 +167,26 @@ public:
     Token* cmp;
     Token* rate;
     Token* proc;
+    long label;
+};
+
+class IfToken : public Token
+{
+private:
+    static long LABEL_INDEX;
+
+public:
+    IfToken():
+        Token(IF),
+        children(),
+        label(LABEL_INDEX++){}
+
+    struct IfChild
+    {
+        Token* cmp;
+        Token* proc;
+    };
+    std::vector<IfChild> children;
     long label;
 };
 
