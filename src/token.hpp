@@ -16,6 +16,8 @@ public:
         PARENT, 
         // function, call, variable
         FUNCTION, CALL, VARIABLE,
+        // while, for, if
+        WHILE, FOR, IF,
         // declaration
         DEC_LONG, DEC_INT, DEC_SHORT, DEC_CHAR,
         // integral
@@ -50,6 +52,9 @@ public:
     bool isParent() const;
     bool isFunction() const;
     bool isCall() const;
+    bool isWhile() const;
+    bool isFor() const;
+    bool isIf() const;
     bool isDeclaration() const;
     bool isOperator() const;
     bool isArithmeticOperator() const;
@@ -125,6 +130,23 @@ public:
     EType type;
     std::string name;
     std::vector<Token*> args;
+};
+
+class WhileToken : public Token
+{
+private:
+    static long LABEL_INDEX;
+
+public:
+    WhileToken():
+        Token(WHILE),
+        cmp(nullptr),
+        proc(nullptr),
+        label(LABEL_INDEX++){}
+
+    Token* cmp;
+    Token* proc;
+    long label;
 };
 
 class OperatorToken : public Token

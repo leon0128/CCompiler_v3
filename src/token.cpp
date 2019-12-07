@@ -6,6 +6,7 @@ std::vector<Token*> Token::TOKENS
 const std::unordered_map<Token::EKind, const char*> Token::KIND_NAME_MAP
     = {{PARENT, "PARENT"},
        {FUNCTION, "FUNCTION"}, {CALL, "CALL"}, {VARIABLE, "VARIABLE"},
+       {WHILE, "WHILE"}, {FOR, "FOR"}, {IF, "IF"},
        {DEC_LONG, "DEC_LONG"}, {DEC_INT, "DEC_INT"}, {DEC_SHORT, "DEC_SHORT"}, {DEC_CHAR, "DEC_CHAR"},
        {INTEGRAL, "INTEGRAL"},
        {EQUAL, "EQUAL"}, {NOT, "NOT"},
@@ -26,6 +27,8 @@ const std::unordered_map<Token::EType, long> Token::TYPE_SIZE_MAP
 const std::unordered_map<Token::EKind, Token::EType> Token::TYPE_DEC_MAP
     = {{DEC_LONG, LONG}, {DEC_INT, INT}, {DEC_SHORT, SHORT}, {DEC_CHAR, CHAR}};
 
+long WhileToken::LABEL_INDEX = 0;
+
 Token::Token(EKind inKind):
     kind(inKind)
 {
@@ -45,6 +48,21 @@ bool Token::isFunction() const
 bool Token::isCall() const
 {
     return kind == CALL;
+}
+
+bool Token::isWhile() const
+{
+    return kind == WHILE;
+}
+
+bool Token::isFor() const
+{
+    return kind == FOR;
+}
+
+bool Token::isIf() const
+{
+    return kind == IF;
 }
 
 bool Token::isDeclaration() const

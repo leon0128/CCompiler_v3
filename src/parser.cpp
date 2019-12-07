@@ -123,8 +123,30 @@ Token* Parser::statement()
 {
     Token* token = nullptr;
 
+    // while
+    if(DATA::TOKENIZER_DATA().at(mIndex)->isWhile())
+    {
+        WhileToken* whiTok
+            = Token::cast<WhileToken*>(DATA::TOKENIZER_DATA().at(mIndex++));
+        
+        if(!isErrored(Token::OPEN_BRACKET))
+            return nullptr;
+        
+        whiTok->cmp = expression();
+        
+        if(!isErrored(Token::CLOSE_BRACKET))
+            return nullptr;
+        
+        if(isValid(Token::OPEN_BLOCK))
+            whiTok->proc = block();
+        else
+            whiTok->proc = statement();
+
+        token = whiTok;
+        return token;
+    }
     // return
-    if(DATA::TOKENIZER_DATA().at(mIndex)->isReturn())
+    else if(DATA::TOKENIZER_DATA().at(mIndex)->isReturn())
     {
         ReturnToken* retTok
             = Token::cast<ReturnToken*>(DATA::TOKENIZER_DATA().at(mIndex++));
@@ -132,6 +154,8 @@ Token* Parser::statement()
         retTok->expr = expression();
         token = retTok;
     }
+    else if(isValid(Token::END))
+        token = nullptr;
     else
         token = declaration();
 
@@ -224,7 +248,7 @@ Token* Parser::equality()
             OperatorToken* opeTok
                 = Token::cast<OperatorToken*>(DATA::TOKENIZER_DATA().at(mIndex++));
             
-            opeTok->lhs = comparison();
+            opeTok->lhs = token;
             opeTok->rhs = comparison();
 
             token = opeTok;
@@ -425,6 +449,7 @@ bool Parser::error(Token::EKind kind)
     std::cerr << "pars-err: invalid token "
               << "( ideal: " << Token::KIND_NAME_MAP.at(kind)
               << ", fact: " << Token::KIND_NAME_MAP.at(DATA::TOKENIZER_DATA().at(mIndex)->kind)
+              << ", index :" << mIndex
               << " )." << std::endl;
 
     mIsValid = false;

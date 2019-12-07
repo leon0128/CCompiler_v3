@@ -6,7 +6,7 @@
 const std::unordered_map<Generator::EInstruction, std::pair<const char*, std::size_t>> Generator::INSTRUCTION_MAP
     = {{MOV,   {"mov   ", 2}}, {MOVZX, {"movzx ", 2}}, {MOVSX, {"movsx ", 2}},
        {PUSH,  {"push  ", 1}}, {POP,   {"pop   ", 1}},
-       {CMP,   {"cmp   ", 2}},
+       {CMP,   {"cmp   ", 2}}, {JMP,   {"jmp   ", 1}}, {JNE,   {"jne   ", 1}},
        {SETE,  {"sete  ", 1}}, {SETNE, {"setne ", 1}}, {SETL,  {"setl  ", 1}}, {SETLE, {"setle ", 1}}, {SETG,  {"setg  ", 1}}, {SETGE, {"setge", 1}},
        {ADD,   {"add   ", 2}}, {SUB,   {"sub   ", 2}}, {IMUL,  {"imul  ", 1}}, {IDIV,  {"idiv  ", 1}},
        {CQO,   {"cqo   ", 0}}, {CDQE,  {"cdqe  ", 0}},
@@ -61,6 +61,8 @@ void Generator::consume(Token* token)
         conFunction(token);
     else if(token->isCall())
         conCall(token);
+    else if(token->isWhile())
+        conWhile(token);
     else if(token->isArithmeticOperator())
         conArithmeticOperator(token);
     else if(token->isAssignmentOperator())
@@ -134,6 +136,27 @@ void Generator::conCall(Token* token)
     
     for(std::size_t i = 0; i < callerArgSize; i++)
         instruction(POP, Operand::argRegister(i));
+}
+
+void Generator::conWhile(Token* token)
+{
+    WhileToken* whiTok
+        = Token::cast<WhileToken*>(token);
+    
+    std::string label(".LW");
+    label += std::to_string(whiTok->label);
+    label.push_back('C');
+
+    instruction(JMP, label);
+    label.back() = 'P';
+    DATA::GENERATOR_DATA() << label << ":" << std::endl;
+    consume(whiTok->proc);
+    label.back() = 'C';
+    DATA::GENERATOR_DATA() << label << ":" << std::endl;
+    consume(whiTok->cmp);
+    instruction(CMP, Operand::RAX, 0L);
+    label.back() = 'P';
+    instruction(JNE, label);
 }
 
 void Generator::conArithmeticOperator(Token* token)

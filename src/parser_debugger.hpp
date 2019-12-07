@@ -9,6 +9,7 @@
 #define DEBUG_PARENT   1
 #define DEBUG_FUNCTION 1
 #define DEBUG_CALL     1
+#define DEBUG_WHILE    1
 #define DEBUG_OPERATOR 1
 #define DEBUG_RETURN   1
 #define DEBUG_VARIABLE 1
@@ -32,6 +33,8 @@ private:
                             std::string disc = std::string());
     std::string conCall(class Token* token,
                         std::string disc = std::string());
+    std::string conWhile(class Token* token,
+                         std::string disc = std::string());
     std::string conOperator(class Token* token,
                             std::string disc = std::string());
     std::string conReturn(class Token* token,
@@ -40,6 +43,7 @@ private:
                             std::string disc = std::string());
     std::string conIntegral(class Token* token,
                             std::string disc = std::string());
+    std::string conNullptr(std::string disc = std::string());
 
     // [-] [KIND_NAME]\n をストリームに追加
     void addNodeHeader(class Token* token,

@@ -12,8 +12,8 @@ class Generator
     enum EInstruction
     {
         MOV, MOVZX, MOVSX,// 代入
-        PUSH, POP,  // スタック操作
-        CMP,        // 比較
+        PUSH, POP,        // スタック操作
+        CMP, JMP, JNE,    // 比較 ジャンプ
         SETE, SETNE, SETL, SETLE, SETG, SETGE, // フラグ
         ADD, SUB, IMUL, IDIV, // 四則演算 (符号付)
         CQO, CDQE,  // 拡張
@@ -35,6 +35,7 @@ private:
     void conParent(class Token* token);
     void conFunction(class Token* token);
     void conCall(class Token* token);
+    void conWhile(class Token* token);
     void conArithmeticOperator(class Token* token);
     void conAssignmentOperator(class Token* token);
     void conCompareOperator(class Token* token);
