@@ -40,7 +40,20 @@ public:
     // 型
     enum EType
     {
-        LONG, INT, SHORT, CHAR
+        POINTER, LONG, INT, SHORT, CHAR
+    };
+    // 型構造体
+    class Type
+    {
+    private:
+        static std::vector<Type*> TYPES;
+    public:
+        Type(EType inType);
+
+        EType type; // 型
+        Type* node; // ポインタの場合のノード
+
+        static void destroy();
     };
 
     // 特殊関数
@@ -103,7 +116,7 @@ public:
 class FunctionToken : public Token
 {
 public:
-    FunctionToken(const std::string& inName, EType inType):
+    FunctionToken(const std::string& inName, Type* inType):
         Token(FUNCTION),
         type(inType),
         name(inName),
@@ -111,9 +124,9 @@ public:
         proc(nullptr),
         offset(0){}
 
-    EType type;
+    Type* type;
     std::string name;
-    std::vector<EType> argsType;
+    std::vector<Type*> argsType;
     Token* proc;
     long offset;
 };
@@ -123,11 +136,11 @@ class CallToken : public Token
 public:
     CallToken(std::string& inName):
         Token(CALL),
-        type(INT),
+        type(nullptr),
         name(inName),
         args(){}
 
-    EType type;
+    Type* type;
     std::string name;
     std::vector<Token*> args;
 };
@@ -217,12 +230,12 @@ class VariableToken : public Token
 public:
     VariableToken(const std::string& inName):
         Token(VARIABLE),
-        type(LONG),
+        type(nullptr),
         name(inName),
         offset(0),
         isArg(false){}
 
-    EType type;
+    Type* type;
     std::string name;
     long offset; // ローカル変数の場合は rbp からの offset, 仮引数の場合は index
     bool isArg;

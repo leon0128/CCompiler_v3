@@ -2,6 +2,8 @@
 
 std::vector<Token*> Token::TOKENS
     = std::vector<Token*>();
+std::vector<Token::Type*> Token::Type::TYPES
+    = std::vector<Token::Type*>();
 
 const std::unordered_map<Token::EKind, const char*> Token::KIND_NAME_MAP
     = {{PARENT, "PARENT"},
@@ -19,10 +21,10 @@ const std::unordered_map<Token::EKind, const char*> Token::KIND_NAME_MAP
        {COMMA, "COMMA"}, {END, "END"}};
 
 const std::unordered_map<Token::EType, const char*> Token::TYPE_NAME_MAP
-    = {{LONG, "long"}, {INT, "int"}, {SHORT, "short"}, {CHAR, "char"}};
+    = {{POINTER, "*"}, {LONG, "long"}, {INT, "int"}, {SHORT, "short"}, {CHAR, "char"}};
 
 const std::unordered_map<Token::EType, long> Token::TYPE_SIZE_MAP
-    = {{LONG, 8}, {INT, 4}, {SHORT, 2}, {CHAR, 1}};
+    = {{POINTER, 8}, {LONG, 8}, {INT, 4}, {SHORT, 2}, {CHAR, 1}};
 
 const std::unordered_map<Token::EKind, Token::EType> Token::TYPE_DEC_MAP
     = {{DEC_LONG, LONG}, {DEC_INT, INT}, {DEC_SHORT, SHORT}, {DEC_CHAR, CHAR}};
@@ -35,6 +37,19 @@ Token::Token(EKind inKind):
     kind(inKind)
 {
     TOKENS.emplace_back(this);
+}
+
+Token::Type::Type(EType inType):
+    type(inType),
+    node(nullptr)
+{
+    TYPES.emplace_back(this);
+}
+
+void Token::Type::destroy()
+{
+    for(auto&& e : TYPES)
+        delete e;
 }
 
 bool Token::isParent() const

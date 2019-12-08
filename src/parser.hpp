@@ -38,7 +38,7 @@ private:
     bool error(const char* message);
 
     // 関数の引数の型を格納する
-    bool setArgsType(std::vector<Token::EType>& argsType,
+    bool setArgsType(std::vector<Token::Type*>& argsType,
                      bool& isPrototype);
 
     std::size_t mIndex;

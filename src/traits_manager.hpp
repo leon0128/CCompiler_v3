@@ -15,15 +15,15 @@ private:
 
     struct FunctionTrait
     {
-        Token::EType type;
+        Token::Type* type;
         std::string name;
-        std::vector<Token::EType> argsType;
+        std::vector<Token::Type*> argsType;
         bool isDefined;
     };
     struct VariableTrait
     {
         long scope;
-        Token::EType type;
+        Token::Type* type;
         std::string name;
         long offset;
         bool isArg;

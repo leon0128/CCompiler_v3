@@ -99,7 +99,7 @@ std::string ParserDebugger::conFunction(Token* token, std::string disc)
         
         stream << createIndent(mIsValidIndents.size())
                << " |----- "
-               << Token::TYPE_NAME_MAP.at(funTok->type) << " (type)"
+               << Token::TYPE_NAME_MAP.at(funTok->type->type) << " (type)"
                << std::endl
                << createIndent(mIsValidIndents.size())
                << " |----- \""
@@ -110,7 +110,7 @@ std::string ParserDebugger::conFunction(Token* token, std::string disc)
         {
             stream << createIndent(mIsValidIndents.size())
                    << " |----- "
-                   << Token::TYPE_NAME_MAP.at(funTok->argsType.at(i))
+                   << Token::TYPE_NAME_MAP.at(funTok->argsType.at(i)->type)
                    << " (arg " << i << ")" << std::endl;
         }
         
@@ -125,7 +125,7 @@ std::string ParserDebugger::conFunction(Token* token, std::string disc)
             else
                 stream << " `----- ";
             
-            stream << Token::TYPE_NAME_MAP.at(funTok->argsType.at(i))
+            stream << Token::TYPE_NAME_MAP.at(funTok->argsType.at(i)->type)
                    << " (arg " << i << ")" << std::endl;
         }
         mIsValidIndents.pop_back();
@@ -157,7 +157,7 @@ std::string ParserDebugger::conCall(Token* token, std::string disc)
 
         stream << createIndent(mIsValidIndents.size())
                << " |----- "
-               << Token::TYPE_NAME_MAP.at(calTok->type)
+               << Token::TYPE_NAME_MAP.at(calTok->type->type)
                << " (type)" << std::endl
                << createIndent(mIsValidIndents.size())
                << " |----- "
@@ -279,7 +279,7 @@ std::string ParserDebugger::conIf(Token* token, std::string disc)
             }
             mIsValidIndents.push_back(true);
             stream << createIndent(mIsValidIndents.size() - 1)
-                   << " |-----"
+                   << " |----- "
                    << i << " (index)" << std::endl;
             mIsValidIndents.back() = true;
             stream << createIndent(mIsValidIndents.size() - 1)
@@ -354,7 +354,7 @@ std::string ParserDebugger::conVariable(Token* token, std::string disc)
 
         stream << createIndent(mIsValidIndents.size())
                << " |----- "
-               << Token::TYPE_NAME_MAP.at(varTok->type)
+               << Token::TYPE_NAME_MAP.at(varTok->type->type)
                << " (type)" << std::endl
                << createIndent(mIsValidIndents.size())
                << " |----- \""

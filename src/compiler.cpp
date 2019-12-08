@@ -30,6 +30,7 @@ Compiler::~Compiler()
     delete mTokenizer;
     delete mPreprocessor;
 
+    Token::Type::destroy();
     Token::destroy();
 }
 

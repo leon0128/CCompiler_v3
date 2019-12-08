@@ -54,8 +54,8 @@ Token* Parser::function()
 
     if(DATA::TOKENIZER_DATA().at(mIndex)->isDeclaration())
     {
-        Token::EType type
-            = Token::TYPE_DEC_MAP.at(DATA::TOKENIZER_DATA().at(mIndex)->kind);
+        Token::Type* type
+            = new Token::Type(Token::TYPE_DEC_MAP.at(DATA::TOKENIZER_DATA().at(mIndex)->kind));
 
         mIndex++;
         if(!isErrored(Token::VARIABLE))
@@ -65,7 +65,7 @@ Token* Parser::function()
             = Token::cast<VariableToken*>(DATA::TOKENIZER_DATA().at(mIndex - 1));
         FunctionToken* funTok
             = new FunctionToken(varTok->name, type);
-        std::vector<Token::EType> argsType;
+        std::vector<Token::Type*> argsType;
 
         mTraitsManager->addFunctionTrait(funTok);
         mTraitsManager->incScope();
@@ -267,8 +267,8 @@ Token* Parser::declaration()
     if(DATA::TOKENIZER_DATA().at(mIndex)->isDeclaration())
     {
         ParentToken* parTok = new ParentToken();
-        Token::EType type
-            = Token::TYPE_DEC_MAP.at(DATA::TOKENIZER_DATA().at(mIndex++)->kind);
+        Token::Type* type
+            = new Token::Type(Token::TYPE_DEC_MAP.at(DATA::TOKENIZER_DATA().at(mIndex++)->kind));
 
         while(1)
         {
@@ -560,7 +560,7 @@ bool Parser::error(const char* message)
     return mIsValid; 
 }
 
-bool Parser::setArgsType(std::vector<Token::EType>& argsType,
+bool Parser::setArgsType(std::vector<Token::Type*>& argsType,
                          bool& isPrototype)
 {
     if(!isErrored(Token::OPEN_BRACKET))
@@ -578,7 +578,7 @@ bool Parser::setArgsType(std::vector<Token::EType>& argsType,
         if(!DATA::TOKENIZER_DATA().at(mIndex)->isDeclaration())
             return isErrored(Token::DEC_INT);
 
-        argsType.push_back(Token::TYPE_DEC_MAP.at(DATA::TOKENIZER_DATA().at(mIndex++)->kind));
+        argsType.push_back(new Token::Type(Token::TYPE_DEC_MAP.at(DATA::TOKENIZER_DATA().at(mIndex++)->kind)));
 
         if(isValid(Token::VARIABLE))
         {

@@ -308,11 +308,11 @@ void Generator::conVariable(Token* token)
 
     instruction(MOV, Operand::shrinkAccum(token), token);
     
-    if(Token::TYPE_SIZE_MAP.at(varTok->type) == 1)
+    if(Token::TYPE_SIZE_MAP.at(varTok->type->type) == 1)
         instruction(MOVSX, Operand::RAX, Operand::AL);
-    else if(Token::TYPE_SIZE_MAP.at(varTok->type) == 2)
+    else if(Token::TYPE_SIZE_MAP.at(varTok->type->type) == 2)
         instruction(MOVSX, Operand::RAX, Operand::AX);
-    else if(Token::TYPE_SIZE_MAP.at(varTok->type) == 4)
+    else if(Token::TYPE_SIZE_MAP.at(varTok->type->type) == 4)
         instruction(CDQE);
 }
 

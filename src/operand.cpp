@@ -46,13 +46,13 @@ Operand::ERegister Operand::shrinkAccum(Token* token)
     if(varTok->isArg)
         return RAX;
     
-    if(Token::TYPE_SIZE_MAP.at(varTok->type) == 8)
+    if(Token::TYPE_SIZE_MAP.at(varTok->type->type) == 8)
         return RAX;
-    else if(Token::TYPE_SIZE_MAP.at(varTok->type) == 4)
+    else if(Token::TYPE_SIZE_MAP.at(varTok->type->type) == 4)
         return EAX;
-    else if(Token::TYPE_SIZE_MAP.at(varTok->type) == 2)
+    else if(Token::TYPE_SIZE_MAP.at(varTok->type->type) == 2)
         return AX;
-    else if(Token::TYPE_SIZE_MAP.at(varTok->type) == 1)
+    else if(Token::TYPE_SIZE_MAP.at(varTok->type->type) == 1)
         return AL;
     else
         return R15;
@@ -87,7 +87,7 @@ Operand::Operand(Token* token):
     if(!varTok->isArg)
     {
         std::stringstream stream;
-        stream << SPECIFICATION_SIZE_MAP.at(Token::TYPE_SIZE_MAP.at(varTok->type))
+        stream << SPECIFICATION_SIZE_MAP.at(Token::TYPE_SIZE_MAP.at(varTok->type->type))
             << " [" << REGISTER_NAME_MAP.at(RBP)
             << ((varTok->offset >= 0) ? " + " : " - ")
             << std::abs(varTok->offset) << "]";
