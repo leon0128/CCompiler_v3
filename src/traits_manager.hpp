@@ -9,6 +9,7 @@ class TraitsManager
 {
 private:
     friend class Parser;
+    friend class ParserHelper;
 
     TraitsManager();
     ~TraitsManager();

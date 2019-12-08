@@ -7,6 +7,8 @@
 class Parser
 {
 public:
+    friend class ParserHelper;
+
     Parser();
     ~Parser();
 
@@ -37,11 +39,8 @@ private:
     bool error(Token::EKind kind);
     bool error(const char* message);
 
-    // 関数の引数の型を格納する
-    bool setArgsType(std::vector<Token::Type*>& argsType,
-                     bool& isPrototype);
-
     std::size_t mIndex;
     class TraitsManager* mTraitsManager;
+    class ParserHelper* mHelper;
     bool mIsValid;
 };
