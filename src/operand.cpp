@@ -38,24 +38,42 @@ const std::unordered_map<Operand::ERegister, const char*> Operand::REGISTER_NAME
        {Operand::YMM8,   "ymm8"}, {Operand::YMM9,   "ymm9"}, {Operand::YMM10, "ymm10"}, {Operand::YMM11, "ymm11"},
        {Operand::YMM12, "ymm12"}, {Operand::YMM13, "ymm13"}, {Operand::YMM14, "ymm14"}, {Operand::YMM15, "ymm15"}};
 
-Operand::ERegister Operand::shrinkAccum(Token* token)
-{
-    VariableToken* varTok
-        = Token::cast<VariableToken*>(token);
-
-    if(varTok->isArg)
+Operand::ERegister Operand::shrinkAccum(Token::EType type)
+{    
+    if(Token::TYPE_SIZE_MAP.at(type) == 8)
         return RAX;
-    
-    if(Token::TYPE_SIZE_MAP.at(varTok->type->type) == 8)
-        return RAX;
-    else if(Token::TYPE_SIZE_MAP.at(varTok->type->type) == 4)
+    else if(Token::TYPE_SIZE_MAP.at(type) == 4)
         return EAX;
-    else if(Token::TYPE_SIZE_MAP.at(varTok->type->type) == 2)
+    else if(Token::TYPE_SIZE_MAP.at(type) == 2)
         return AX;
-    else if(Token::TYPE_SIZE_MAP.at(varTok->type->type) == 1)
+    else if(Token::TYPE_SIZE_MAP.at(type) == 1)
         return AL;
     else
         return R15;
+}
+
+Operand::ERegister Operand::shrinkBase(Token::ETyep type)
+{
+    if(Token::TYPE_SIZE_MAP.at(type) == 8)
+        return RBX;
+    else if(Token::TYPE_SIZE_MAP.at(type) == 4)
+        return EBX;
+    else if(Token::TYPE_SIZE_MAP.at(type) == 2)
+        return BX;
+    else if(Token::TYPE_SIZE_MAP.at(type) == 1)
+        return BL;
+    else
+        return R15;
+}
+
+Operand::ERegister Operand::reference(ERegister reg, Token::EType type)
+{
+    std::string data(SPECIFICATION_SIZE_MAP.at(Token::TYPE_SIZE_MAP.at(type)));
+    data += " ["
+    data += REGISTER_NAME_MAP.at(reg);
+    data += "]";
+    
+    return data;
 }
 
 Operand::Operand():
@@ -76,25 +94,6 @@ Operand::Operand(ERegister reg):
 Operand::Operand(std::string& str):
     mString(str)
 {
-}
-
-Operand::Operand(Token* token):
-    mString()
-{
-    VariableToken* varTok
-        = Token::cast<VariableToken*>(token);
-
-    if(!varTok->isArg)
-    {
-        std::stringstream stream;
-        stream << SPECIFICATION_SIZE_MAP.at(Token::TYPE_SIZE_MAP.at(varTok->type->type))
-            << " [" << REGISTER_NAME_MAP.at(RBP)
-            << ((varTok->offset >= 0) ? " + " : " - ")
-            << std::abs(varTok->offset) << "]";
-        mString = stream.str();
-    }
-    else
-        mString = REGISTER_NAME_MAP.at(ARG_REGISTER_ARRAY.at(varTok->offset));
 }
 
 Operand::~Operand()

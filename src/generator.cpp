@@ -251,9 +251,22 @@ void Generator::conAssignmentOperator(Token* token)
 {
     OperatorToken* opeTok
         = Token::cast<OperatorToken*>(token);
+    VariableToken* varTok
+        = Token::cast<VariableToken*>(opeTok->lhs);
 
     consume(opeTok->rhs);
-    instruction(MOV, opeTok->lhs, Operand::shrinkAccum(opeTok->lhs));
+
+    if(varTok->isArg)
+        instruction(MOV, Operand::argRegister(varTok->offset), Operand::RAX);
+    else
+    {
+        instruction(MOV, Operand::RBX, Operand::RAX);
+        instruction(MOV, Operand::RAX, Operand::RBP);
+        instruction(SUB, Operand::RAX, varTok->offset);
+        instruction(MOV, Operand::reference(Operand::RAX, varTok->type->type), Operand::shrinkBase(varTok->type->type));
+        instruction(MOV, Operand::shrinkAccum(varTok->type->type), Operand::reference(Operand::RAX, varTok->type->type)); 
+        exAccum(varTok->type->type);    
+    }
 }
 
 void Generator::conCompareOperator(Token* token)
@@ -306,14 +319,15 @@ void Generator::conVariable(Token* token)
     VariableToken* varTok
         = Token::cast<VariableToken*>(token);
 
-    instruction(MOV, Operand::shrinkAccum(token), token);
-    
-    if(Token::TYPE_SIZE_MAP.at(varTok->type->type) == 1)
-        instruction(MOVSX, Operand::RAX, Operand::AL);
-    else if(Token::TYPE_SIZE_MAP.at(varTok->type->type) == 2)
-        instruction(MOVSX, Operand::RAX, Operand::AX);
-    else if(Token::TYPE_SIZE_MAP.at(varTok->type->type) == 4)
-        instruction(CDQE);
+    if(varTok->isArg)
+        instruction(MOV, Operand::RAX, Operand::argRegister(varTok->offset))
+    else
+    {
+        instruction(MOV, Operand::RAX, Operand::RBP);
+        instruction(SUB, Operand::RAX, varTok->offset);
+        instruction(MOV, Operand::RAX, Operand::reference(Operand::RAX, varTok->type->type));
+        exAccum(varTok->type->type);    
+    }
 }
 
 void Generator::conIntegral(Token* token)
@@ -354,4 +368,14 @@ bool Generator::error(Token* token)
               << std::endl;
     mIsValid = false;
     return mIsValid;
+}
+
+void Generator::exAccum(Token::EType type)
+{
+    if(Token::TYPE_SIZE_MAP.at(varTok->type->type) == 1)
+        instruction(MOVSX, Operand::RAX, Operand::AL);
+    else if(Token::TYPE_SIZE_MAP.at(varTok->type->type) == 2)
+        instruction(MOVSX, Operand::RAX, Operand::AX);
+    else if(Token::TYPE_SIZE_MAP.at(varTok->type->type) == 4)
+        instruction(CDQE);
 }

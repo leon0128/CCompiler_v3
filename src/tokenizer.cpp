@@ -128,7 +128,10 @@ bool Tokenizer::isOperator(Token::EKind& kind)
         if(isValid('='))
             kind = Token::CMP_EQUAL;
         else
+        {
+            mIndex--;
             kind = Token::EQUAL;
+        }
     }
     else if(isValid('!'))
     {
@@ -136,7 +139,10 @@ bool Tokenizer::isOperator(Token::EKind& kind)
         if(isValid('='))
             kind = Token::CMP_NOT_EQUAL;
         else
+        {
+            mIndex--;
             kind = Token::NOT;
+        }
     }
     else if(isValid('<'))
     {
@@ -144,7 +150,10 @@ bool Tokenizer::isOperator(Token::EKind& kind)
         if(isValid('='))
             kind = Token::CMP_LESS_EQUAL;
         else
+        {
+            mIndex--;
             kind = Token::CMP_LESS;
+        }
     }
     else if(isValid('>'))
     {
@@ -152,7 +161,14 @@ bool Tokenizer::isOperator(Token::EKind& kind)
         if(isValid('='))
             kind = Token::CMP_GREATER_EQUAL;
         else
+        {
+            mIndex--;
             kind = Token::CMP_GREATER;
+        }
+    }
+    else if(isValid('&'))
+    {
+        kind = Token::AMPERSAND;
     }
     else
         return false;

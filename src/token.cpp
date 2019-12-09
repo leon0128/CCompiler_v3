@@ -11,7 +11,7 @@ const std::unordered_map<Token::EKind, const char*> Token::KIND_NAME_MAP
        {WHILE, "WHILE"}, {FOR, "FOR"}, {IF, "IF"}, {ELSE, "ELSE"},
        {DEC_LONG, "DEC_LONG"}, {DEC_INT, "DEC_INT"}, {DEC_SHORT, "DEC_SHORT"}, {DEC_CHAR, "DEC_CHAR"},
        {INTEGRAL, "INTEGRAL"},
-       {EQUAL, "EQUAL"}, {NOT, "NOT"},
+       {EQUAL, "EQUAL"}, {NOT, "NOT"}, {AMPERSAND, "AMPERSAND"},
        {PLUS, "PLUS"}, {MINUS, "MINUS"}, {ASTERISK, "ASTERISK"}, {VIRGULE, "VIRGULE"}, {PERCENT, "PERCENT"},
        {CMP_EQUAL, "CMP_EQUAL"}, {CMP_NOT_EQUAL, "CMP_NOT_EQUAL"},
        {CMP_LESS, "CMP_LESS"}, {CMP_LESS_EQUAL, "CMP_LESS_EQUAL"},

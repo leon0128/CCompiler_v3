@@ -109,7 +109,7 @@ bool TraitsManager::addVariableTrait(Token* token, bool isLocal, long argIndex)
         mVariableTraits.push_back(VariableTrait{mScope,
                                                 varTok->type,
                                                 varTok->name,
-                                                -mLocalOffset,
+                                                mLocalOffset,
                                                 !isLocal});
     }
     else

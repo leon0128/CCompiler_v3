@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <iostream>
 #include "operand.hpp"
+#include "token.hpp"
 
 class Generator
 {
@@ -52,6 +53,8 @@ private:
                      Operand ope4 = Operand());
 
     bool error(class Token* token);
+
+    void exAccum(Token::EType type); // アキュームレータ の符号拡張
 
     bool mIsValid;
 };

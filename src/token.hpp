@@ -22,8 +22,8 @@ public:
         DEC_LONG, DEC_INT, DEC_SHORT, DEC_CHAR,
         // integral
         INTEGRAL,
-        // =, !
-        EQUAL, NOT,
+        // =, !, &
+        EQUAL, NOT, AMPERSAND,
         // +, -, *, /, %
         PLUS, MINUS, ASTERISK, VIRGULE, PERCENT,
         // ==, !=, <, <=, >, >=
@@ -233,11 +233,13 @@ public:
         type(nullptr),
         name(inName),
         offset(0),
+        rank(0),
         isArg(false){}
 
     Type* type;
     std::string name;
     long offset; // ローカル変数の場合は rbp からの offset, 仮引数の場合は index
+    long rank;
     bool isArg;
 };
 
