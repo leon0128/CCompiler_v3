@@ -263,8 +263,8 @@ void Generator::conAssignmentOperator(Token* token)
         instruction(MOV, Operand::RBX, Operand::RAX);
         instruction(MOV, Operand::RAX, Operand::RBP);
         instruction(SUB, Operand::RAX, varTok->offset);
-        instruction(MOV, Operand::reference(Operand::RAX, varTok->type->type), Operand::shrinkBase(varTok->type->type));
-        instruction(MOV, Operand::shrinkAccum(varTok->type->type), Operand::reference(Operand::RAX, varTok->type->type)); 
+        instruction(MOV, Operand::reference(Operand::RAX, varTok->type), Operand::shrinkBase(varTok->type));
+        instruction(MOV, Operand::shrinkAccum(varTok->type), Operand::reference(Operand::RAX, varTok->type)); 
         exAccum(varTok->type->type);    
     }
 }
@@ -320,12 +320,12 @@ void Generator::conVariable(Token* token)
         = Token::cast<VariableToken*>(token);
 
     if(varTok->isArg)
-        instruction(MOV, Operand::RAX, Operand::argRegister(varTok->offset))
+        instruction(MOV, Operand::RAX, Operand::argRegister(varTok->offset));
     else
     {
         instruction(MOV, Operand::RAX, Operand::RBP);
         instruction(SUB, Operand::RAX, varTok->offset);
-        instruction(MOV, Operand::RAX, Operand::reference(Operand::RAX, varTok->type->type));
+        instruction(MOV, Operand::shrinkAccum(varTok->type), Operand::reference(Operand::RAX, varTok->type));
         exAccum(varTok->type->type);    
     }
 }
@@ -372,10 +372,10 @@ bool Generator::error(Token* token)
 
 void Generator::exAccum(Token::EType type)
 {
-    if(Token::TYPE_SIZE_MAP.at(varTok->type->type) == 1)
+    if(Token::TYPE_SIZE_MAP.at(type) == 1)
         instruction(MOVSX, Operand::RAX, Operand::AL);
-    else if(Token::TYPE_SIZE_MAP.at(varTok->type->type) == 2)
+    else if(Token::TYPE_SIZE_MAP.at(type) == 2)
         instruction(MOVSX, Operand::RAX, Operand::AX);
-    else if(Token::TYPE_SIZE_MAP.at(varTok->type->type) == 4)
+    else if(Token::TYPE_SIZE_MAP.at(type) == 4)
         instruction(CDQE);
 }

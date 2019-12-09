@@ -38,38 +38,38 @@ const std::unordered_map<Operand::ERegister, const char*> Operand::REGISTER_NAME
        {Operand::YMM8,   "ymm8"}, {Operand::YMM9,   "ymm9"}, {Operand::YMM10, "ymm10"}, {Operand::YMM11, "ymm11"},
        {Operand::YMM12, "ymm12"}, {Operand::YMM13, "ymm13"}, {Operand::YMM14, "ymm14"}, {Operand::YMM15, "ymm15"}};
 
-Operand::ERegister Operand::shrinkAccum(Token::EType type)
+Operand::ERegister Operand::shrinkAccum(Token::Type* type)
 {    
-    if(Token::TYPE_SIZE_MAP.at(type) == 8)
+    if(Token::TYPE_SIZE_MAP.at(type->type) == 8)
         return RAX;
-    else if(Token::TYPE_SIZE_MAP.at(type) == 4)
+    else if(Token::TYPE_SIZE_MAP.at(type->type) == 4)
         return EAX;
-    else if(Token::TYPE_SIZE_MAP.at(type) == 2)
+    else if(Token::TYPE_SIZE_MAP.at(type->type) == 2)
         return AX;
-    else if(Token::TYPE_SIZE_MAP.at(type) == 1)
+    else if(Token::TYPE_SIZE_MAP.at(type->type) == 1)
         return AL;
     else
         return R15;
 }
 
-Operand::ERegister Operand::shrinkBase(Token::ETyep type)
+Operand::ERegister Operand::shrinkBase(Token::Type* type)
 {
-    if(Token::TYPE_SIZE_MAP.at(type) == 8)
+    if(Token::TYPE_SIZE_MAP.at(type->type) == 8)
         return RBX;
-    else if(Token::TYPE_SIZE_MAP.at(type) == 4)
+    else if(Token::TYPE_SIZE_MAP.at(type->type) == 4)
         return EBX;
-    else if(Token::TYPE_SIZE_MAP.at(type) == 2)
+    else if(Token::TYPE_SIZE_MAP.at(type->type) == 2)
         return BX;
-    else if(Token::TYPE_SIZE_MAP.at(type) == 1)
+    else if(Token::TYPE_SIZE_MAP.at(type->type) == 1)
         return BL;
     else
         return R15;
 }
 
-Operand::ERegister Operand::reference(ERegister reg, Token::EType type)
+std::string Operand::reference(ERegister reg, Token::Type* type)
 {
-    std::string data(SPECIFICATION_SIZE_MAP.at(Token::TYPE_SIZE_MAP.at(type)));
-    data += " ["
+    std::string data(SPECIFICATION_SIZE_MAP.at(Token::TYPE_SIZE_MAP.at(type->type)));
+    data += " [";
     data += REGISTER_NAME_MAP.at(reg);
     data += "]";
     
@@ -92,6 +92,11 @@ Operand::Operand(ERegister reg):
 }
 
 Operand::Operand(std::string& str):
+    mString(str)
+{
+}
+
+Operand::Operand(std::string&& str):
     mString(str)
 {
 }

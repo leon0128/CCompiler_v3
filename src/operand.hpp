@@ -47,19 +47,20 @@ public:
     static const std::array<ERegister, 7> ARG_REGISTER_ARRAY;
 
     // 変数の大きさに合わせて アキュームレータ の使用する領域の変更
-    static ERegister shrinkAccum(Token::EType type);
+    static ERegister shrinkAccum(Token::Type* type);
     // 変数の大きさに合わせて ベースレジスタ の使用する領域を変更
-    static ERegister shrinkBase(Token::EType type);
+    static ERegister shrinkBase(Token::Type* type);
     // 指定したレジスタの参照
-    static ERegister reference(ERegister reg, Token::EType type);
+    static std::string reference(ERegister reg, Token::Type* type);
 
     // 引数のインデックスを元に 使用するレジスタの取得
-    static const std::string argRegister(std::size_t index){return ARG_REGISTER_ARRAY.at(index);}
+    static const ERegister argRegister(std::size_t index){return ARG_REGISTER_ARRAY.at(index);}
 
     Operand();
     Operand(long value);
     Operand(ERegister reg);
     Operand(std::string& str);
+    Operand(std::string&& str);
 
     ~Operand();
 

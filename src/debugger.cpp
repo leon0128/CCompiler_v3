@@ -1,6 +1,6 @@
 #include "debugger.hpp"
-#include "file_manager.hpp"
 #include "token.hpp"
+#include "file_manager.hpp"
 #include "parser_debugger.hpp"
 
 const char* Debugger::PREPROCESS_FILENAME
