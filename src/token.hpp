@@ -230,15 +230,15 @@ public:
     VariableToken(const std::string& inName):
         Token(VARIABLE),
         type(nullptr),
+        rank(0),
         name(inName),
         offset(0),
-        rank(0),
         isArg(false){}
 
     Type* type;
+    long rank;
     std::string name;
     long offset; // ローカル変数の場合は rbp からの offset, 仮引数の場合は index
-    long rank;
     bool isArg;
 };
 
